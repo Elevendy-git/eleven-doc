@@ -18,6 +18,13 @@
       }
     },
     {
+      "id": "overview",
+      "title": "UI Kit 概览",
+      "src": "/assets/copilot-macos-ui-kit/overview.webp",
+      "width": 1920,
+      "height": 1080
+    },
+    {
       "id": "fundamentals",
       "title": "基础规范",
       "src": "/assets/copilot-macos-ui-kit/fundamentals.webp",

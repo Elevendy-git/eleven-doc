@@ -122,7 +122,8 @@ html.has-cursor-fx.project-dialog-cursor-active .project-dialog::backdrop { curs
 .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-dialog-viewer { background: #fff; }
 .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-pages { box-sizing: border-box; max-width: 1200px; padding: 8px clamp(28px, 3.4vw, 48px) 64px; }
 .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-section { padding-top: 40px; background: transparent; }
-.project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-page + .project-portfolio-page { margin-top: 24px; }
+.project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-section + .project-portfolio-section { padding-top: 16px; }
+.project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-page + .project-portfolio-page { margin-top: 16px; }
 .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-text-content { display: grid; grid-template-columns: minmax(160px, .75fr) minmax(0, 2fr); gap: 48px; min-height: 0; padding: 12px 0 16px; background: transparent; }
 .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-text-content h3 { font-size: clamp(26px, 2.4vw, 32px); line-height: 1.25; }
 .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-text-copy { margin: 0; max-width: 680px; }
@@ -157,7 +158,8 @@ html.has-cursor-fx.project-dialog-cursor-active .project-dialog::backdrop { curs
   .project-dialog-mobile-nav select { flex: 1; min-width: 0; min-height: 44px; padding: 4px 24px 4px 0; border: 0; color: #555; background: #fff; font-family: inherit; font-size: 12px; line-height: 1.5; }
   .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-pages { padding: 0 12px 32px; }
   .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-section { padding-top: 24px; }
-  .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-page + .project-portfolio-page { margin-top: 16px; }
+  .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-section + .project-portfolio-section { padding-top: 12px; }
+  .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-portfolio-page + .project-portfolio-page { margin-top: 12px; }
   .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-text-content { gap: 20px; padding: 8px 8px 4px; }
   .project-dialog[data-project-id="copilot-macos-ui-kit"] .project-text-copy p { font-size: 15px; line-height: 1.8; }
 }
