@@ -62,7 +62,6 @@
   const englishChapters = {
     "copilot-macos-ui-kit": {
       background: "Project Background",
-      overview: "UI Kit Overview",
       fundamentals: "Design Fundamentals",
       components: "Core Components",
       "native-components": "Native Components",
