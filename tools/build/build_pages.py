@@ -1,6 +1,6 @@
 """Build the static site for GitHub Pages without changing local previews.
 
-    python3 tools/build/build_pages.py --base-path /eleven-portfolio/ --output-dir _site
+    python3 tools/build/build_pages.py --base-path /eleven-doc/ --output-dir _site
 
 Only runtime files are published. Python's standard library is sufficient.
 """
@@ -95,7 +95,7 @@ def build(output, base):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--base-path", default="/eleven-portfolio/")
+    parser.add_argument("--base-path", default="/eleven-doc/")
     parser.add_argument("--output-dir", type=Path, default=ROOT / "_site")
     args = parser.parse_args()
     base = args.base_path

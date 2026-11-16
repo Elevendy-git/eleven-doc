@@ -2,7 +2,7 @@
 
 Run against the source tree, or against a Pages build:
     python3 tests/site_integrity_test.py
-    python3 tests/site_integrity_test.py --site-dir _site --base-path /eleven-portfolio/
+    python3 tests/site_integrity_test.py --site-dir _site --base-path /eleven-doc/
 """
 
 import argparse
