@@ -1,0 +1,95 @@
+{
+  "sections": [
+    {
+      "id": "background",
+      "title": "项目背景",
+      "type": "text",
+      "paragraphs": {
+        "zh": [
+          "我们正在打造 Copilot macOS UI Kit，在 Copilot 核心设计系统的基础上，补充适用于 macOS 的基础规范，包括字体排版、层级与阴影、材质效果、图标体系，以及 16 个关键组件。",
+          "这套 UI Kit 为设计与研发建立统一基础，提高效率、加快迭代，并加强与工程团队的协作，帮助交付一致、高质量的代码。",
+          "面向未来，它也为后续功能的扩展奠定基础，让 Copilot 在保持跨平台一致性的同时，呈现自然、原生的 macOS 体验。"
+        ],
+        "en": [
+          "We are building the Copilot macOS UI Kit to extend the core Copilot Design System with macOS-specific fundamentals—typography, elevation, materials, iconography—and 16 key components.",
+          "This kit creates a shared foundation that improves efficiency, accelerates iteration, and strengthens collaboration with engineering to deliver a consistent, high-quality code base.",
+          "Looking ahead, it also sets the stage for scaling future features with confidence and ensuring Copilot continues to feel both native to macOS and cohesive across platforms."
+        ]
+      }
+    },
+    {
+      "id": "overview",
+      "title": "UI Kit 概览",
+      "src": "/assets/copilot-macos-ui-kit/01-overview.webp",
+      "width": 3840,
+      "height": 2160
+    },
+    {
+      "id": "fundamentals",
+      "title": "基础规范",
+      "src": "/assets/copilot-macos-ui-kit/02-design-fundamentals.webp",
+      "width": 3840,
+      "height": 2160
+    },
+    {
+      "id": "components",
+      "title": "核心组件",
+      "src": "/assets/copilot-macos-ui-kit/03-components.webp",
+      "width": 3840,
+      "height": 2160
+    },
+    {
+      "id": "native-components",
+      "title": "原生组件",
+      "src": "/assets/copilot-macos-ui-kit/04-native-components.webp",
+      "width": 3840,
+      "height": 2160
+    },
+    {
+      "id": "materials",
+      "title": "材质效果",
+      "src": "/assets/copilot-macos-ui-kit/05-materials.webp",
+      "width": 3840,
+      "height": 2160
+    },
+    {
+      "id": "typography",
+      "title": "字体排版",
+      "src": "/assets/copilot-macos-ui-kit/06-typography.webp",
+      "width": 3840,
+      "height": 2160
+    },
+    {
+      "id": "navigation",
+      "title": "导航设计",
+      "pages": [
+        {
+          "src": "/assets/copilot-macos-ui-kit/07-navigation.webp",
+          "width": 3840,
+          "height": 2160
+        },
+        {
+          "src": "/assets/copilot-macos-ui-kit/08-experience.webp",
+          "width": 3840,
+          "height": 2160
+        }
+      ]
+    },
+    {
+      "id": "dialogs",
+      "title": "弹窗与规范",
+      "pages": [
+        {
+          "src": "/assets/copilot-macos-ui-kit/09-dialog.webp",
+          "width": 3840,
+          "height": 2160
+        },
+        {
+          "src": "/assets/copilot-macos-ui-kit/10-dialog-guidelines.webp",
+          "width": 3840,
+          "height": 2160
+        }
+      ]
+    }
+  ]
+}

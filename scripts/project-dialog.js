@@ -57,9 +57,20 @@
     page: (number) => ` · 第 ${number} 页`,
     video: (title) => title + " 交互演示",
   };
-  // Only the surrounding reader is translated; exported portfolio images
+  // Reader copy and authored text are translated; exported portfolio images
   // and their manifest paths remain shared by both language versions.
   const englishChapters = {
+    "copilot-macos-ui-kit": {
+      background: "Project Background",
+      overview: "UI Kit Overview",
+      fundamentals: "Design Fundamentals",
+      components: "Core Components",
+      "native-components": "Native Components",
+      materials: "Materials",
+      typography: "Typography",
+      navigation: "Navigation",
+      dialogs: "Dialogs & Guidelines",
+    },
     delysium: {
       overview: "Project Overview",
       "sso-process": "Account Login · Research & Flows",
@@ -98,6 +109,10 @@
       id: "bing-app",
       title: "Bing App",
       singleSection: true,
+    },
+    "copilot-macos-ui-kit": {
+      id: "copilot-macos-ui-kit",
+      title: "Copilot macOS UI Kit",
     },
     delysium: {
       id: "delysium",
@@ -294,6 +309,14 @@
             if (data.groups !== undefined ? !groups.has(section.group) : section.group !== undefined) throw new Error(ui.invalidSections);
             ids.add(section.id);
             if (section.layout !== undefined && section.layout !== "media-row") throw new Error(ui.invalidSections);
+            if (section.type === "text") {
+              if (section.pages !== undefined || section.layout !== undefined || section.placeholder !== undefined) throw new Error(ui.invalidSections);
+              for (const locale of ["zh", "en"]) {
+                const paragraphs = section.paragraphs?.[locale];
+                if (!Array.isArray(paragraphs) || !paragraphs.length || paragraphs.some((text) => typeof text !== "string" || !text.trim())) throw new Error(ui.invalidSections);
+              }
+              continue;
+            }
             if (section.placeholder === true) continue;
             const media = section.pages === undefined ? [section] : section.pages;
             if (!Array.isArray(media) || !media.length) throw new Error(ui.emptyPages);
@@ -344,6 +367,22 @@
       error.append(description, retry);
       page.append(error);
     }
+  }
+
+  function createPortfolioText(data, title) {
+    const content = document.createElement("div");
+    content.className = "project-text-content";
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+    const copy = document.createElement("div");
+    copy.className = "project-text-copy";
+    data.paragraphs[isEnglish ? "en" : "zh"].forEach((text) => {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = text;
+      copy.append(paragraph);
+    });
+    content.append(heading, copy);
+    return content;
   }
 
   function createVideoHeading(title) {
@@ -524,6 +563,11 @@
       section.dataset.sectionId = item.id;
       section.hidden = config.singleSection && index !== 0;
       section.setAttribute("aria-label", chapterTitle);
+      if (item.type === "text") {
+        section.append(createPortfolioText(item, chapterTitle));
+        pages.append(section);
+        return;
+      }
       if (item.placeholder === true) {
         const placeholder = document.createElement("div");
         placeholder.className = "project-content-placeholder";

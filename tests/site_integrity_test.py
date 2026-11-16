@@ -14,7 +14,7 @@ from urllib.parse import unquote, urljoin, urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROJECTS = ("bing-app", "delysium", "digital-china", "deep-blue", "bard-ai")
+PROJECTS = ("bing-app", "copilot-macos-ui-kit", "delysium", "digital-china", "deep-blue", "bard-ai")
 FLIGHT_PUSH = re.compile(r"^\s*self\.__next_f\.push\((.*)\)\s*;?\s*$", re.S)
 CSS_URL = re.compile(r"url\(\s*(?:'([^']*)'|\"([^\"]*)\"|([^)]*))\s*\)", re.I)
 
@@ -214,6 +214,14 @@ class IntegrityCheck:
                     if "layout" in section and section["layout"] != "media-row":
                         raise ValueError("invalid section layout")
                     section_ids.add(section["id"])
+                    if section.get("type") == "text":
+                        if any(key in section for key in ("pages", "layout", "placeholder")):
+                            raise ValueError("text sections cannot contain media or placeholders")
+                        for locale in ("zh", "en"):
+                            paragraphs = section.get("paragraphs", {}).get(locale)
+                            if not isinstance(paragraphs, list) or not paragraphs or any(not isinstance(text, str) or not text.strip() for text in paragraphs):
+                                raise ValueError(f"missing or invalid {locale} text paragraphs")
+                        continue
                     if section.get("placeholder") is True:
                         continue
                     media_row = section.get("layout") == "media-row"
