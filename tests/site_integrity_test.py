@@ -214,6 +214,16 @@ class IntegrityCheck:
                     if "layout" in section and section["layout"] != "media-row":
                         raise ValueError("invalid section layout")
                     section_ids.add(section["id"])
+                    if "type" in section and section["type"] not in ("image", "video", "text", "component"):
+                        raise ValueError("invalid section type")
+                    if "component" in section and section.get("type") != "component":
+                        raise ValueError("component configuration requires a component section")
+                    if section.get("type") == "component":
+                        if project != "copilot-macos-ui-kit" or section["id"] != "toast" or section.get("component") != "toast":
+                            raise ValueError("unknown portfolio component")
+                        if any(key in section for key in ("src", "pages", "layout", "placeholder", "paragraphs", "width", "height")):
+                            raise ValueError("component sections cannot contain text, media or placeholders")
+                        continue
                     if section.get("type") == "text":
                         if any(key in section for key in ("pages", "layout", "placeholder")):
                             raise ValueError("text sections cannot contain media or placeholders")

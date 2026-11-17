@@ -90,6 +90,12 @@
           "height": 1080
         }
       ]
+    },
+    {
+      "id": "toast",
+      "title": "Toast 组件",
+      "type": "component",
+      "component": "toast"
     }
   ]
 }

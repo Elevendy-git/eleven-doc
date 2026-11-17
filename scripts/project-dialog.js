@@ -70,6 +70,7 @@
       typography: "Typography",
       navigation: "Navigation",
       dialogs: "Dialogs & Guidelines",
+      toast: "Toast Component",
     },
     delysium: {
       overview: "Project Overview",
@@ -148,7 +149,13 @@
   let controller;
   let videoObserver;
   const videoRows = new Map();
+  const portfolioComponents = new Set();
   let loadingToken = 0;
+
+  function destroyPortfolioComponents() {
+    portfolioComponents.forEach((component) => component.destroy());
+    portfolioComponents.clear();
+  }
 
   function stopPortfolioVideos() {
     videoObserver?.disconnect();
@@ -260,6 +267,7 @@
       onClose() {
         ++loadingToken;
         stopPortfolioVideos();
+        destroyPortfolioComponents();
         manifest = null;
       },
     });
@@ -308,7 +316,13 @@
             if (!section || typeof section.id !== "string" || !/^[a-zA-Z0-9_-]+$/.test(section.id) || ids.has(section.id) || typeof section.title !== "string") throw new Error(ui.invalidSections);
             if (data.groups !== undefined ? !groups.has(section.group) : section.group !== undefined) throw new Error(ui.invalidSections);
             ids.add(section.id);
+            if (section.type !== undefined && !["image", "video", "text", "component"].includes(section.type)) throw new Error(ui.invalidSections);
+            if (section.component !== undefined && section.type !== "component") throw new Error(ui.invalidSections);
             if (section.layout !== undefined && section.layout !== "media-row") throw new Error(ui.invalidSections);
+            if (section.type === "component") {
+              if (config.id !== "copilot-macos-ui-kit" || section.id !== "toast" || section.component !== "toast" || ["src", "pages", "layout", "placeholder", "paragraphs", "width", "height"].some((key) => section[key] !== undefined)) throw new Error(ui.invalidSections);
+              continue;
+            }
             if (section.type === "text") {
               if (section.pages !== undefined || section.layout !== undefined || section.placeholder !== undefined) throw new Error(ui.invalidSections);
               for (const locale of ["zh", "en"]) {
@@ -563,6 +577,13 @@
       section.dataset.sectionId = item.id;
       section.hidden = config.singleSection && index !== 0;
       section.setAttribute("aria-label", chapterTitle);
+      if (item.type === "component") {
+        const component = window.createToastShowcase({ isEnglish });
+        portfolioComponents.add(component);
+        section.append(component.element);
+        pages.append(section);
+        return;
+      }
       if (item.type === "text") {
         section.append(createPortfolioText(item, chapterTitle));
         pages.append(section);
@@ -633,6 +654,7 @@
     const requestedProject = project;
     const token = ++loadingToken;
     stopPortfolioVideos();
+    destroyPortfolioComponents();
     manifest = null;
     directory.replaceChildren();
     mobileDirectory.replaceChildren();
