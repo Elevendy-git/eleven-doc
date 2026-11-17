@@ -79,6 +79,14 @@ function fixture(options) {
 }
 
 const page = fixture();
+// Icon-only tools retain discoverable, localized accessible names.
+for (const [control, label] of [[page.replay, '重新播放'], [page.reset, '重置']]) {
+  assert.equal(control.textContent, '');
+  assert.equal(control.attributes.get('aria-label'), label);
+  assert.equal(control.title, label);
+}
+assert.equal(page.notice.attributes.get('role'), 'status');
+assert.equal(page.notice.classList.contains('toast-sr-only'), true);
 const variants = all(page.root, element => Object.hasOwn(element.dataset, 'toastVariant'));
 assert.equal(variants.length, 19);
 assert.equal(new Set(variants.map(element => element.dataset.toastVariant)).size, 19);
@@ -123,14 +131,28 @@ assert.equal(page.toggle('showImage').checked, true);
 const action = one(page.toast(), hasClass('copilot-toast-action'));
 fire(page.preview, 'click', action);
 assert.match(page.notice.textContent, /Explore/);
+assert.equal(action.classList.contains('is-activated'), true);
+assert.equal(action.textContent, 'Explore', 'Visual feedback preserves the action accessible name');
+fire(page.replay, 'click');
+assert.equal(one(page.toast(), hasClass('copilot-toast-action')).classList.contains('is-activated'), false);
 const dismiss = one(page.toast(), hasClass('copilot-toast-dismiss'));
 fire(page.preview, 'click', dismiss.firstElementChild);
 assert.equal(page.preview.hidden, true);
+assert.equal(page.notice.textContent, '通知已关闭');
 assert.equal(document.activeElement, page.replay);
 assert.equal(page.replay.focusOptions.preventScroll, true);
 fire(page.replay, 'click');
 assert.equal(page.preview.hidden, false);
 assert.equal(page.toast().dataset.toastClass, 'feature');
+
+// Turning off every optional slot leaves a blank stage with accessible status.
+for (const key of ['showImage', 'showIcon', 'showTitle', 'showDescription', 'showButton', 'showDismiss']) {
+  page.changeProperty(key, false);
+}
+assert.equal(page.preview.hidden, true);
+assert.match(page.notice.textContent, /打开属性开关/);
+page.changeProperty('showTitle', true);
+assert.equal(page.preview.hidden, false);
 
 // A closed reader must leave no active showcase handlers, and opening another
 // reader constructs an independent initial state rather than restoring edits.
@@ -151,6 +173,10 @@ const reopened = fixture({ isEnglish: true });
 assert.equal(reopened.toast().dataset.toastClass, 'feature');
 assert.equal(reopened.toggle('wrap').checked, true);
 assert.equal(reopened.toggle('showImage').checked, true);
-assert.equal(reopened.replay.textContent, 'Replay');
+for (const [control, label] of [[reopened.replay, 'Replay'], [reopened.reset, 'Reset']]) {
+  assert.equal(control.textContent, '');
+  assert.equal(control.attributes.get('aria-label'), label);
+  assert.equal(control.title, label);
+}
 reopened.destroy();
-console.log('Passed: 19 variants, isolated preview properties, class defaults, Survey constraints, dismiss/replay focus, cleanup, and fresh reopen.');
+console.log('Passed: 19 variants, isolated preview properties, class defaults, Survey constraints, icon controls, action feedback, dismiss/replay focus, empty state, cleanup, and fresh reopen.');
