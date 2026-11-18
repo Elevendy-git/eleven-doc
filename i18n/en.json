@@ -48,8 +48,6 @@
     "查看神州数码工作经历详情": "Open Digital China work experience",
     "查看魔方尔斯特工作经历详情": "Open Mofang First work experience",
     "联系 / Elsewhere": "CONTACT / ELSEWHERE",
-    "Vibe Coding 术语与组件图鉴，用可视化示例给新手讲懂网页开发。": "An illustrated guide to vibe coding terms and components, explaining web development through visual examples.",
-    "开始探索": "Explore",
     "Eleven 的产品设计作品集，记录项目、Vibecoding 实验与工作经历。": "Eleven's product design portfolio, featuring projects, vibe coding experiments, and work experience.",
     "Eleven — 产品设计作品集": "Eleven — Product design portfolio",
     "丁祎": "Ding Yi",
@@ -97,14 +95,6 @@
     "InitialLoader": {
       "arialabel01": "Loading the page"
     },
-    "WolfchaDemo": {
-      "line01": "No one died last night",
-      "line02": "I'm the hunter. Don't vote me!",
-      "line03": "I'm the seer. No. 4 is a wolf",
-      "line04": "I guarded No. 5 last night",
-      "line05": "I saved No. 2 last night",
-      "text06": "You"
-    },
     "TextWellDemo": {
       "text01": "AI tools ",
       "text02": " changed how we write,",
@@ -119,36 +109,6 @@
       "to02": "it’s",
       "from03": "then",
       "to03": "than"
-    },
-    "VibeHubDemo": {
-      "text01": "Hover me",
-      "text02": "Lift + color",
-      "text03": "Hover here",
-      "text04": "Compare",
-      "text05": "No change",
-      "text06": "Hover each item to compare its response",
-      "arialabel07": "Replay spring animation",
-      "text08": "Overshoot, then settle",
-      "text09": "Replay",
-      "text10": "Click the track or Replay to try again",
-      "text11": "Cloudtop Lodge",
-      "text12": "backdrop-filter: blur(",
-      "text13": "px)",
-      "text14": "blur:",
-      "text15": "Toggle to compare the background blur",
-      "cn16": "Hover",
-      "cat17": "Pointer",
-      "quote18": "A button changes color on hover to show you can click it.",
-      "cn19": "Spring",
-      "cat20": "Motion",
-      "quote21": "A small bounce makes a dialog feel like it's settling on a spring.",
-      "cn22": "Glass",
-      "cat23": "Style",
-      "quote24": "A translucent navigation bar blurs the content scrolling behind it.",
-      "text25": "N°",
-      "arialabel26": "Previous term",
-      "arialabel27": "Next term",
-      "switchTerm": "Show {term}"
     },
     "SelectorDemo": {
       "text01": "1. button \"Get started\" → round corners",
