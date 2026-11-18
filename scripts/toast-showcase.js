@@ -5,16 +5,16 @@
   // Class / Wrap Text map to the Figma component set. Optional slots map to
   // .Toast notification Base, shared by the preview and every variant.
   const classes = [
-    { id: "feature", name: "Feature Discovery", title: "Explore A face to talk to", description: "Start a Voice conversation to see my new look.", image: "feature.png", action: "Explore", dismiss: true, width: 464 },
-    { id: "podcast", name: "Podcast", title: "New podcast ready", description: "The secret lives of house cats.", image: "podcast.jpg", action: "Listen", dismiss: true },
-    { id: "survey", name: "Survey", title: "We'd love your feedback", description: "Take a short survey to help us improve Copilot for Mac.", image: "survey.png", action: "Start survey", dismiss: true, wraps: [false] },
-    { id: "research", name: "Research", title: "New research ready", description: "I just finished the research you asked for—let’s dive in!", action: "Go to report", dismiss: true },
-    { id: "critical", name: "Critical", title: "Copilot is at capacity right now", description: "Please try again at another time.", icon: "critical.svg" },
-    { id: "warning", name: "Warning", title: "Copilot is at capacity right now", icon: "warning.svg" },
-    { id: "inline", name: "Inline", title: "Couldn’t complete your request", description: "Service is catching its breath. Let’s give it another go.", action: "Retry" },
-    { id: "info-single", name: "Info/Single-line", description: "You've been chatting a while. Consider taking a break.", dismiss: true, width: 420 },
-    { id: "info-multi", name: "Info/Multi-line", title: "Thanks for providing feedback!", description: "Your feedback helps me assist you better next time.", dismiss: true },
-    { id: "settings", name: "Settings", title: "We got your feedback", icon: "success.svg" },
+    { id: "feature", name: "Feature Discovery", title: "Explore A face to talk to", description: "Start a Voice conversation to see my new look.", image: "feature.png", action: "Explore", dismiss: true, width: 464, galleryWrap: true },
+    { id: "podcast", name: "Podcast", title: "New podcast ready", description: "The secret lives of house cats.", image: "podcast.jpg", action: "Listen", dismiss: true, galleryWrap: false },
+    { id: "survey", name: "Survey", title: "We'd love your feedback", description: "Take a short survey to help us improve Copilot for Mac.", image: "survey.png", action: "Start survey", dismiss: true, wraps: [false], galleryWrap: false },
+    { id: "research", name: "Research", title: "New research ready", description: "I just finished the research you asked for—let’s dive in!", action: "Go to report", dismiss: true, galleryWrap: true },
+    { id: "critical", name: "Critical", title: "Copilot is at capacity right now", description: "Please try again at another time.", icon: "critical.svg", galleryWrap: true },
+    { id: "warning", name: "Warning", title: "Copilot is at capacity right now", icon: "warning.svg", galleryWrap: true },
+    { id: "inline", name: "Inline", title: "Couldn’t complete your request", description: "Service is catching its breath. Let’s give it another go.", action: "Retry", galleryWrap: false },
+    { id: "info-single", name: "Info/Single-line", description: "You've been chatting a while. Consider taking a break.", dismiss: true, width: 420, galleryWrap: false },
+    { id: "info-multi", name: "Info/Multi-line", title: "Thanks for providing feedback!", description: "Your feedback helps me assist you better next time.", dismiss: true, galleryWrap: true },
+    { id: "settings", name: "Settings", title: "We got your feedback", icon: "success.svg", galleryWrap: false },
   ];
   const defaults = (preset, wrap = true) => ({
     preset, wrap: preset.wraps ? preset.wraps.includes(wrap) && wrap : wrap,
@@ -84,11 +84,11 @@
   window.createToastShowcase = ({ isEnglish = false } = {}) => {
     const ui = isEnglish ? {
       title: "Toast notification", preview: "Toast preview", properties: "Properties", type: "Class", wrap: "Wrap text",
-      reset: "Reset", variants: "All variants", variantCount: "19 variations",
+      reset: "Reset", variants: "All variants", variantCount: (count) => `${count} variations`,
       slots: { showImage: "Show image", showIcon: "Show icon", showTitle: "Show title", showDescription: "Show description", showButton: "Show button", showDismiss: "Show dismiss" },
     } : {
       title: "Toast notification", preview: "Toast 预览", properties: "组件属性", type: "类型", wrap: "文本换行",
-      reset: "重置", variants: "所有变体", variantCount: "19 个变体",
+      reset: "重置", variants: "所有变体", variantCount: (count) => `${count} 个变体`,
       slots: { showImage: "显示图片", showIcon: "显示图标", showTitle: "显示标题", showDescription: "显示描述", showButton: "显示按钮", showDismiss: "显示关闭按钮" },
     };
     const events = new AbortController();
@@ -143,19 +143,14 @@
     playground.append(stage, controls);
 
     const galleryHeading = node("div", "toast-gallery-heading");
-    galleryHeading.append(node("h4", "", ui.variants), node("span", "", ui.variantCount));
+    galleryHeading.append(node("h4", "", ui.variants), node("span", "", ui.variantCount(classes.length)));
     const gallery = node("div", "toast-variant-gallery");
     classes.forEach((preset) => {
       const group = node("div", "toast-variant-group");
-      group.append(node("h5", "", preset.name));
-      const samples = node("div", "toast-variant-samples");
-      (preset.wraps || [true, false]).forEach((wrap) => {
-        const sample = node("figure", "toast-variant");
-        sample.dataset.toastVariant = `${preset.id}-${wrap ? "wrap" : "hug"}`;
-        sample.append(createToast(defaults(preset, wrap)));
-        samples.append(sample);
-      });
-      group.append(samples);
+      const sample = node("figure", "toast-variant");
+      sample.dataset.toastVariant = `${preset.id}-${preset.galleryWrap ? "wrap" : "hug"}`;
+      sample.append(createToast(defaults(preset, preset.galleryWrap)));
+      group.append(node("h5", "", preset.name), sample);
       gallery.append(group);
     });
     board.append(brand, heading, playground, galleryHeading, gallery);

@@ -70,11 +70,14 @@ function fixture(options) {
 
 const page = fixture();
 const variants = all(page.root, element => Object.hasOwn(element.dataset, 'toastVariant'));
-assert.equal(variants.length, 19);
-assert.equal(new Set(variants.map(element => element.dataset.toastVariant)).size, 19);
-assert.equal(variants[0].dataset.toastVariant, 'feature-wrap');
-assert.equal(variants.at(-1).dataset.toastVariant, 'settings-hug');
-assert.equal(variants.some(element => element.dataset.toastVariant === 'survey-wrap'), false);
+const retainedVariants = [
+  'feature-wrap', 'podcast-hug', 'survey-hug', 'research-wrap', 'critical-wrap',
+  'warning-wrap', 'inline-hug', 'info-single-hug', 'info-multi-wrap', 'settings-hug',
+];
+assert.equal(variants.length, 10);
+assert.equal(new Set(variants.map(element => element.dataset.toastVariant)).size, 10);
+assert.deepEqual(variants.map(element => element.dataset.toastVariant), retainedVariants);
+assert.match(one(page.root, hasClass('toast-gallery-heading')).textContent, /10/);
 assert.equal(page.preview.attributes.get('aria-label'), 'Toast 预览');
 
 // The display has no replay, instructions, or action feedback. Only the
@@ -106,6 +109,17 @@ page.changeClass('podcast');
 assert.equal(page.toggle('showImage').checked, true);
 assert.equal(page.toggle('showDescription').checked, true);
 assert.equal(one(page.toast(), hasClass('copilot-toast-action')).textContent, 'Listen');
+// Choosing one gallery sample per class must not constrain the preview's
+// independent wrap control, including classes whose retained sample is hug.
+for (const preset of ['podcast', 'inline']) {
+  page.changeClass(preset);
+  assert.equal(page.toggle('wrap').disabled, false);
+  page.changeProperty('wrap', false);
+  assert.equal(page.toast().dataset.wrap, 'false');
+  page.changeProperty('wrap', true);
+  assert.equal(page.toast().dataset.wrap, 'true');
+}
+assert.deepEqual(variants.map(element => element.dataset.toastVariant), retainedVariants);
 page.changeClass('survey');
 assert.equal(page.toggle('wrap').checked, false);
 assert.equal(page.toggle('wrap').disabled, true);
@@ -170,4 +184,4 @@ assert.equal(reopened.preview.attributes.get('aria-label'), 'Toast preview');
 assert.equal(reopened.reset.textContent, 'Reset');
 assert.doesNotMatch(reopened.root.textContent, /Interactive preview|Replay|Notification (?:shown|dismissed)|Turn on a property/);
 reopened.destroy();
-console.log('Passed: 19 static variants, property-only preview changes, class defaults, Survey constraints, blank/restore, cleanup, and fresh reopen.');
+console.log('Passed: 10 selected static variants, unrestricted preview wrap controls, property-only changes, class defaults, Survey constraints, blank/restore, cleanup, and fresh reopen.');

@@ -45,7 +45,6 @@
 .toast-variant-group { display: grid; grid-template-columns: 152px minmax(0, 1fr); gap: 28px; padding: 28px 0; }
 .toast-variant-group + .toast-variant-group { border-top: 1px solid #e4ded8; }
 .toast-variant-group h5 { padding-top: 3px; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
-.toast-variant-samples { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; min-width: 0; }
 .toast-variant { width: 100%; min-width: 0; }
 
 /* Toast notification Base: image / text / action / dismiss remain independent slots. */
