@@ -47,7 +47,6 @@
 .toast-variant-group h5 { padding-top: 3px; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
 .toast-variant-samples { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; min-width: 0; }
 .toast-variant { width: 100%; min-width: 0; }
-.toast-variant figcaption { margin-bottom: 10px; color: var(--toast-muted); font-size: 11px; }
 
 /* Toast notification Base: image / text / action / dismiss remain independent slots. */
 .copilot-toast {

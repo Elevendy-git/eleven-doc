@@ -85,12 +85,10 @@
     const ui = isEnglish ? {
       title: "Toast notification", preview: "Toast preview", properties: "Properties", type: "Class", wrap: "Wrap text",
       reset: "Reset", variants: "All variants", variantCount: "19 variations",
-      wrapped: "Wrap text", hug: "Hug content",
       slots: { showImage: "Show image", showIcon: "Show icon", showTitle: "Show title", showDescription: "Show description", showButton: "Show button", showDismiss: "Show dismiss" },
     } : {
       title: "Toast notification", preview: "Toast 预览", properties: "组件属性", type: "类型", wrap: "文本换行",
       reset: "重置", variants: "所有变体", variantCount: "19 个变体",
-      wrapped: "文本换行", hug: "内容自适应",
       slots: { showImage: "显示图片", showIcon: "显示图标", showTitle: "显示标题", showDescription: "显示描述", showButton: "显示按钮", showDismiss: "显示关闭按钮" },
     };
     const events = new AbortController();
@@ -154,7 +152,7 @@
       (preset.wraps || [true, false]).forEach((wrap) => {
         const sample = node("figure", "toast-variant");
         sample.dataset.toastVariant = `${preset.id}-${wrap ? "wrap" : "hug"}`;
-        sample.append(node("figcaption", "", wrap ? ui.wrapped : ui.hug), createToast(defaults(preset, wrap)));
+        sample.append(createToast(defaults(preset, wrap)));
         samples.append(sample);
       });
       group.append(samples);
