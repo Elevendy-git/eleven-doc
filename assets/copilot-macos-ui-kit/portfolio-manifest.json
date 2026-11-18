@@ -93,7 +93,7 @@
     },
     {
       "id": "toast",
-      "title": "Toast 组件",
+      "title": "交互原型",
       "type": "component",
       "component": "toast"
     }

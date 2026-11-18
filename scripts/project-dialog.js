@@ -70,7 +70,7 @@
       typography: "Typography",
       navigation: "Navigation",
       dialogs: "Dialogs & Guidelines",
-      toast: "Toast Component",
+      toast: "Prototype",
     },
     delysium: {
       overview: "Project Overview",
