@@ -20,42 +20,42 @@
     {
       "id": "overview",
       "title": "UI Kit 概览",
-      "src": "/assets/copilot-macos-ui-kit/01-overview.webp?v=dc770c10cd5c",
+      "src": "/assets/copilot-macos-ui-kit/01-overview.webp?v=29275af2c81e",
       "width": 1920,
       "height": 1080
     },
     {
       "id": "fundamentals",
       "title": "基础规范",
-      "src": "/assets/copilot-macos-ui-kit/02-design-fundamentals.webp?v=f77c341731e5",
+      "src": "/assets/copilot-macos-ui-kit/02-design-fundamentals.webp?v=1ed84b2e1630",
       "width": 1920,
       "height": 1080
     },
     {
       "id": "components",
       "title": "核心组件",
-      "src": "/assets/copilot-macos-ui-kit/03-components.webp?v=cf249e7b5276",
+      "src": "/assets/copilot-macos-ui-kit/03-components.webp?v=4f4b514540c6",
       "width": 1920,
       "height": 1080
     },
     {
       "id": "native-components",
       "title": "原生组件",
-      "src": "/assets/copilot-macos-ui-kit/04-native-components.webp?v=3e1671c2ed96",
+      "src": "/assets/copilot-macos-ui-kit/04-native-components.webp?v=6bff75dc27d0",
       "width": 1920,
       "height": 1080
     },
     {
       "id": "materials",
       "title": "材质效果",
-      "src": "/assets/copilot-macos-ui-kit/05-materials.webp?v=78a781ae2590",
+      "src": "/assets/copilot-macos-ui-kit/05-materials.webp?v=743b4889401e",
       "width": 1920,
       "height": 1080
     },
     {
       "id": "typography",
       "title": "字体排版",
-      "src": "/assets/copilot-macos-ui-kit/06-typography.webp?v=0a2ff8fdfef9",
+      "src": "/assets/copilot-macos-ui-kit/06-typography.webp?v=371f700fed6c",
       "width": 1920,
       "height": 1080
     },
@@ -64,12 +64,12 @@
       "title": "导航设计",
       "pages": [
         {
-          "src": "/assets/copilot-macos-ui-kit/07-navigation.webp?v=881fd374f9a3",
+          "src": "/assets/copilot-macos-ui-kit/07-navigation.webp?v=64c49291b1f8",
           "width": 1920,
           "height": 1080
         },
         {
-          "src": "/assets/copilot-macos-ui-kit/08-experience.webp?v=8509738a4661",
+          "src": "/assets/copilot-macos-ui-kit/08-experience.webp?v=e3d5224926c3",
           "width": 1920,
           "height": 1080
         }
@@ -85,7 +85,7 @@
           "height": 1080
         },
         {
-          "src": "/assets/copilot-macos-ui-kit/10-dialog-guidelines.webp?v=53c9af86a49a",
+          "src": "/assets/copilot-macos-ui-kit/10-dialog-guidelines.webp?v=fdd615b2cced",
           "width": 1920,
           "height": 1080
         }
