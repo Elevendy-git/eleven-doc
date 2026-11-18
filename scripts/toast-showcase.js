@@ -84,11 +84,11 @@
   window.createToastShowcase = ({ isEnglish = false } = {}) => {
     const ui = isEnglish ? {
       title: "Toast notification", preview: "Toast preview", properties: "Properties", type: "Class", wrap: "Wrap text",
-      reset: "Reset", variants: "All variants", variantCount: (count) => `${count} variations`,
+      reset: "Reset", variants: "All variants",
       slots: { showImage: "Show image", showIcon: "Show icon", showTitle: "Show title", showDescription: "Show description", showButton: "Show button", showDismiss: "Show dismiss" },
     } : {
       title: "Toast notification", preview: "Toast 预览", properties: "组件属性", type: "类型", wrap: "文本换行",
-      reset: "重置", variants: "所有变体", variantCount: (count) => `${count} 个变体`,
+      reset: "重置", variants: "所有变体",
       slots: { showImage: "显示图片", showIcon: "显示图标", showTitle: "显示标题", showDescription: "显示描述", showButton: "显示按钮", showDismiss: "显示关闭按钮" },
     };
     const events = new AbortController();
@@ -137,13 +137,13 @@
       listen(input, "change", () => { state[key] = input.checked; render(); });
     };
     addToggle("wrap", ui.wrap);
-    const divider = node("div", "toast-properties-base", ".Toast notification Base");
+    const divider = node("div", "toast-properties-divider");
     controls.append(divider);
     Object.entries(ui.slots).forEach(([key, label]) => addToggle(key, label));
     playground.append(stage, controls);
 
     const galleryHeading = node("div", "toast-gallery-heading");
-    galleryHeading.append(node("h4", "", ui.variants), node("span", "", ui.variantCount(classes.length)));
+    galleryHeading.append(node("h4", "", ui.variants));
     const gallery = node("div", "toast-variant-gallery");
     classes.forEach((preset) => {
       const group = node("div", "toast-variant-group");

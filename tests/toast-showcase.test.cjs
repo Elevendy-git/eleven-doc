@@ -77,7 +77,9 @@ const retainedVariants = [
 assert.equal(variants.length, 10);
 assert.equal(new Set(variants.map(element => element.dataset.toastVariant)).size, 10);
 assert.deepEqual(variants.map(element => element.dataset.toastVariant), retainedVariants);
-assert.match(one(page.root, hasClass('toast-gallery-heading')).textContent, /10/);
+const galleryHeading = one(page.root, hasClass('toast-gallery-heading'));
+assert.equal(galleryHeading.textContent, '所有变体');
+assert.equal(all(galleryHeading, element => element.tagName === 'span').length, 0);
 assert.equal(page.preview.attributes.get('aria-label'), 'Toast 预览');
 
 // The display has no replay, instructions, or action feedback. Only the
@@ -182,6 +184,9 @@ assert.equal(reopened.toggle('wrap').checked, true);
 assert.equal(reopened.toggle('showImage').checked, true);
 assert.equal(reopened.preview.attributes.get('aria-label'), 'Toast preview');
 assert.equal(reopened.reset.textContent, 'Reset');
+const englishGalleryHeading = one(reopened.root, hasClass('toast-gallery-heading'));
+assert.equal(englishGalleryHeading.textContent, 'All variants');
+assert.equal(all(englishGalleryHeading, element => element.tagName === 'span').length, 0);
 assert.doesNotMatch(reopened.root.textContent, /Interactive preview|Replay|Notification (?:shown|dismissed)|Turn on a property/);
 reopened.destroy();
 console.log('Passed: 10 selected static variants, unrestricted preview wrap controls, property-only changes, class defaults, Survey constraints, blank/restore, cleanup, and fresh reopen.');
