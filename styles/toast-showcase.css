@@ -1,4 +1,4 @@
-/* A live component spread, using the same palette as the adjacent UI Kit boards. */
+/* A component spread, using the same palette as the adjacent UI Kit boards. */
 .toast-showcase {
   --toast-ink: #272320;
   --toast-muted: #756d67;
@@ -21,17 +21,12 @@
 .toast-showcase-brand { display: flex; justify-content: space-between; gap: 24px; font-size: 12px; }
 .toast-showcase-heading { margin: 36px 0 28px; }
 .toast-showcase-heading h3 { font-size: clamp(24px, 2.4vw, 30px); font-weight: 650; letter-spacing: -.025em; line-height: 1.2; }
-.toast-showcase-heading p { max-width: 640px; margin-top: 12px; color: var(--toast-muted); font-size: 14px; text-wrap: pretty; }
 .toast-playground { display: grid; grid-template-columns: minmax(0, 1fr) 238px; border-radius: 20px; background: var(--toast-panel); overflow: hidden; }
 .toast-preview { display: flex; flex-direction: column; min-width: 0; padding: 24px; }
-.toast-preview-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .toast-showcase h4 { font-size: 16px; font-weight: 600; }
-.toast-showcase-button, .toast-showcase-reset { padding: 7px 12px; border: 1px solid #dcd6d1; border-radius: 8px; color: var(--toast-ink); background: transparent; cursor: pointer; font-size: 12px !important; line-height: 1.5; }
-.toast-showcase-reset { padding: 0; border: 0; border-radius: 2px; color: var(--toast-muted); }
+.toast-showcase-reset { padding: 0; border: 0; border-radius: 2px; color: var(--toast-muted); background: transparent; cursor: pointer; font-size: 12px !important; line-height: 1.5; }
 .toast-preview-canvas { display: grid; flex: 1; align-items: center; min-height: 296px; padding: 32px 0; }
 .toast-preview-content { display: flex; justify-content: center; align-items: center; width: 100%; min-width: 0; }
-.toast-preview-empty { color: var(--toast-muted); text-align: center; }
-.toast-preview-notice { min-height: 20px; color: var(--toast-muted); font-size: 12px; text-align: center; }
 .toast-properties { min-width: 0; padding: 24px 20px; border-left: 1px solid #e4ded8; }
 .toast-properties-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
 .toast-property { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; font-size: 12px; }
@@ -88,9 +83,7 @@
 .project-portfolio-section .toast-showcase .copilot-toast-dismiss-icon { width: 12px; height: 12px; min-height: 0; }
 .copilot-toast-action-slot { flex: none; padding-inline: 8px; }
 .copilot-toast-action { display: flex; align-items: center; justify-content: center; min-width: 36px; min-height: 36px; padding: 0 10px; border: 0; border-radius: 12px; color: #272320; background: #ffffffb3; box-shadow: 0 1px 3px #0000001f, 0 0 1px #00000014, inset 0 .5px .5px .5px #ffffffe6; font-size: 14px; font-weight: 400; line-height: 20px; white-space: nowrap; }
-button.copilot-toast-action { cursor: pointer; }
 .copilot-toast-dismiss { display: flex; align-items: center; justify-content: center; align-self: stretch; flex: none; width: 36px; min-height: 36px; padding: 12px 6px; border: 0; border-radius: 12px; color: #555; background: transparent; }
-button.copilot-toast-dismiss { cursor: pointer; }
 .copilot-toast:has(.copilot-toast-title) .copilot-toast-dismiss { align-items: flex-start; }
 .copilot-toast[data-toast-class="critical"] { color: #ac1922; background: linear-gradient(#ffb5ae33, #ffb5ae33), #fffffff0; }
 .copilot-toast[data-toast-class="warning"] { color: #a25a02; background: linear-gradient(#f3c35733, #f3c35733), #fffffff0; }
@@ -100,13 +93,10 @@ button.copilot-toast-dismiss { cursor: pointer; }
 .toast-showcase .copilot-toast[data-toast-class="critical"] .copilot-toast-description { color: #ac1922; }
 .copilot-toast[data-toast-class="inline"] { background: #efeae7; box-shadow: inset 0 0 0 1px #e2ddd9; backdrop-filter: none; }
 .copilot-toast[data-toast-class="settings"] .copilot-toast-title-text { font-weight: 400; }
-.copilot-toast.is-empty { min-height: 50px; }
 .toast-preview-content .copilot-toast { animation: toast-preview-enter .2s ease-out both; }
 .toast-showcase :is(input, select):focus-visible { outline: 2px solid #272320; outline-offset: 3px; }
 @media (hover: hover) and (pointer: fine) {
-  .toast-showcase-button:hover, button.copilot-toast-action:hover { background: #fff; }
   .toast-showcase-reset:hover { color: #272320; }
-  button.copilot-toast-dismiss:hover { background: #00000008; }
 }
 @container (max-width: 800px) {
   .toast-playground { grid-template-columns: minmax(0, 1fr); }
@@ -144,7 +134,6 @@ button.copilot-toast-dismiss { cursor: pointer; }
   .toast-showcase { padding: 24px 16px; border-radius: 18px; }
   .toast-showcase-brand { font-size: 10px; }
   .toast-showcase-heading { margin-top: 28px; }
-  .toast-showcase-heading p { font-size: 13px; }
 }
 @keyframes toast-preview-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) {
