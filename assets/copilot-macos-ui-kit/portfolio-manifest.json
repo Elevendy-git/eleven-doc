@@ -20,58 +20,58 @@
     {
       "id": "overview",
       "title": "UI Kit 概览",
-      "src": "/assets/copilot-macos-ui-kit/01-overview.webp?v=4c95e76ec7b4",
-      "width": 3840,
-      "height": 2160
+      "src": "/assets/copilot-macos-ui-kit/01-overview.webp?v=8a8577cad79a",
+      "width": 2880,
+      "height": 1620
     },
     {
       "id": "fundamentals",
       "title": "基础规范",
-      "src": "/assets/copilot-macos-ui-kit/02-design-fundamentals.webp?v=b5947971b902",
-      "width": 3840,
-      "height": 2160
+      "src": "/assets/copilot-macos-ui-kit/02-design-fundamentals.webp?v=8944974454d0",
+      "width": 2880,
+      "height": 1620
     },
     {
       "id": "components",
       "title": "核心组件",
-      "src": "/assets/copilot-macos-ui-kit/03-components.webp?v=a0c702f39411",
-      "width": 3840,
-      "height": 2160
+      "src": "/assets/copilot-macos-ui-kit/03-components.webp?v=094083351ef1",
+      "width": 2880,
+      "height": 1620
     },
     {
       "id": "native-components",
       "title": "原生组件",
-      "src": "/assets/copilot-macos-ui-kit/04-native-components.webp?v=ae939c76bec0",
-      "width": 3840,
-      "height": 2160
+      "src": "/assets/copilot-macos-ui-kit/04-native-components.webp?v=f2fa511da654",
+      "width": 2880,
+      "height": 1620
     },
     {
       "id": "materials",
       "title": "材质效果",
-      "src": "/assets/copilot-macos-ui-kit/05-materials.webp?v=55b44588243b",
-      "width": 3840,
-      "height": 2160
+      "src": "/assets/copilot-macos-ui-kit/05-materials.webp?v=26db10093157",
+      "width": 2880,
+      "height": 1620
     },
     {
       "id": "typography",
       "title": "字体排版",
-      "src": "/assets/copilot-macos-ui-kit/06-typography.webp?v=e0c58b265111",
-      "width": 3840,
-      "height": 2160
+      "src": "/assets/copilot-macos-ui-kit/06-typography.webp?v=afe7a1e07cbd",
+      "width": 2880,
+      "height": 1620
     },
     {
       "id": "navigation",
       "title": "导航设计",
       "pages": [
         {
-          "src": "/assets/copilot-macos-ui-kit/07-navigation.webp?v=e685f709e206",
-          "width": 3840,
-          "height": 2160
+          "src": "/assets/copilot-macos-ui-kit/07-navigation.webp?v=282a991ddf24",
+          "width": 2880,
+          "height": 1620
         },
         {
-          "src": "/assets/copilot-macos-ui-kit/08-experience.webp?v=8430c07c2daf",
-          "width": 3840,
-          "height": 2160
+          "src": "/assets/copilot-macos-ui-kit/08-experience.webp?v=89ad261083cf",
+          "width": 2880,
+          "height": 1620
         }
       ]
     },
@@ -80,14 +80,14 @@
       "title": "弹窗与规范",
       "pages": [
         {
-          "src": "/assets/copilot-macos-ui-kit/09-dialog.webp?v=2a508cf058bf",
-          "width": 3840,
-          "height": 2160
+          "src": "/assets/copilot-macos-ui-kit/09-dialog.webp?v=e007c0bb0fb9",
+          "width": 2880,
+          "height": 1620
         },
         {
-          "src": "/assets/copilot-macos-ui-kit/10-dialog-guidelines.webp?v=950cf80edfe0",
-          "width": 3840,
-          "height": 2160
+          "src": "/assets/copilot-macos-ui-kit/10-dialog-guidelines.webp?v=412962dfd0f9",
+          "width": 2880,
+          "height": 1620
         }
       ]
     },
