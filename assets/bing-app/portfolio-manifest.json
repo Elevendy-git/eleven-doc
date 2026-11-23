@@ -7,7 +7,24 @@
     { "id": "global-home", "group": "global", "title": "Home page", "placeholder": true },
     { "id": "global-search", "group": "global", "title": "Search", "placeholder": true },
     { "id": "global-recent", "group": "global", "title": "Recent", "placeholder": true },
-    { "id": "china-fre", "group": "china", "title": "Homepage redesign", "placeholder": true },
+    {
+      "id": "china-fre",
+      "group": "china",
+      "title": "Homepage redesign",
+      "type": "text",
+      "paragraphs": {
+        "zh": [
+          "通过应用商店优化（ASO）、首次使用体验（FRE）和应用内引导的改进，完善新用户体验。",
+          "突出国际版与国内版的模式切换入口，让切换更直观、易用。",
+          "引入更多动效，打造更流畅、愉悦的使用体验，提升用户参与度。"
+        ],
+        "en": [
+          "We are enhancing the onboarding experience by optimizing ASO, improving app FRE, and refining in-app user guidance.",
+          "Additionally, we are highlighting the global/domestic mode switcher and making it more intuitive and user-friendly.",
+          "To further elevate engagement, we are introducing more motion elements to create a smoother, more delightful user experience."
+        ]
+      }
+    },
     { "id": "china-ai-summary", "group": "china", "title": "AI summary", "placeholder": true },
     { "id": "china-ai-daily", "group": "china", "title": "AI Daily", "placeholder": true }
   ]
