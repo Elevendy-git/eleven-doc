@@ -37,6 +37,40 @@
         }
       ]
     },
-    { "id": "china-ai", "group": "china", "title": "Bing China AI", "placeholder": true }
+    {
+      "id": "china-ai",
+      "group": "china",
+      "title": "Bing China AI",
+      "type": "text",
+      "paragraphs": {
+        "zh": [
+          "为 Bing China 融入 AI 功能，提升用户参与度和内容发现体验。首页在搜索框下方新增 AI 工具入口，并重新设计内容卡片，让浏览体验更丰富、更有活力。",
+          "在搜索结果页（SERP）和网页浏览界面加入 AI 摘要功能。用户点击底部的 AI 摘要入口，即可基于搜索结果或当前网页生成简明摘要。",
+          "这些改进旨在提供更智能、高效的浏览体验，让用户快速掌握关键信息。"
+        ],
+        "en": [
+          "We have integrated AI-powered features into Bing China to enhance user engagement and discovery. On the homepage, we've introduced AI tools under the search box and redesigned content cards for a more dynamic experience.",
+          "In the SERP and webpage views, we’ve implemented an AI summary function, allowing users to generate concise summaries based on search results or webpage content by clicking the AI summary option in the footer.",
+          "These enhancements aim to provide a smarter, more efficient browsing experience, making it easier for users to access key information at a glance."
+        ]
+      },
+      "pages": [
+        {
+          "src": "/assets/bing-app/china-ai-01-homepage.webp?v=d3bae4563797",
+          "width": 2560,
+          "height": 1440
+        },
+        {
+          "src": "/assets/bing-app/china-ai-02-summary-serp.webp?v=fff3e93dd9b3",
+          "width": 2560,
+          "height": 1440
+        },
+        {
+          "src": "/assets/bing-app/china-ai-03-summary-webpage.webp?v=ee0740d972de",
+          "width": 2560,
+          "height": 1440
+        }
+      ]
+    }
   ]
 }
