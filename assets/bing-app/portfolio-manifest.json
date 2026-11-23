@@ -53,7 +53,97 @@
           "In the SERP and webpage views, we’ve implemented an AI summary function, allowing users to generate concise summaries based on search results or webpage content by clicking the AI summary option in the footer.",
           "These enhancements aim to provide a smarter, more efficient browsing experience, making it easier for users to access key information at a glance."
         ]
-      }
+      },
+      "features": [
+        {
+          "id": "ai-search",
+          "title": "AI search",
+          "src": "/assets/bing-app/features/ai-search-board.webp?v=9415c17ec16b",
+          "width": 2560,
+          "height": 1440,
+          "video": {
+            "type": "video",
+            "src": "/assets/bing-app/features/ai-search.mp4?v=560e7e73808b",
+            "poster": "/assets/bing-app/features/ai-search-poster.webp?v=f7a42b19dd0c",
+            "width": 780,
+            "height": 1690,
+            "frame": {
+              "x": 213,
+              "y": 265,
+              "width": 484,
+              "height": 1047.425537109375,
+              "radius": 49.641029357910156,
+              "stroke": 2.482051372528076
+            }
+          }
+        },
+        {
+          "id": "summary-serp",
+          "title": "AI summary SERP",
+          "src": "/assets/bing-app/features/summary-serp-board.webp?v=d1a7b5d74b81",
+          "width": 2560,
+          "height": 1440,
+          "video": {
+            "type": "video",
+            "src": "/assets/bing-app/features/summary-serp.mp4?v=c975ad135d0f",
+            "poster": "/assets/bing-app/features/summary-serp-poster.webp?v=f3f71ddc8903",
+            "width": 780,
+            "height": 1690,
+            "frame": {
+              "x": 213,
+              "y": 265,
+              "width": 484,
+              "height": 1047.425537109375,
+              "radius": 49.641029357910156,
+              "stroke": 2.482051372528076
+            }
+          }
+        },
+        {
+          "id": "summary-webpage",
+          "title": "AI summary webpage",
+          "src": "/assets/bing-app/features/summary-webpage-board.webp?v=bf44ee8beb0c",
+          "width": 2560,
+          "height": 1440,
+          "video": {
+            "type": "video",
+            "src": "/assets/bing-app/features/summary-webpage.mp4?v=4ca47db019ad",
+            "poster": "/assets/bing-app/features/summary-webpage-poster.webp?v=62ede1d2ac35",
+            "width": 780,
+            "height": 1690,
+            "frame": {
+              "x": 213,
+              "y": 265,
+              "width": 484,
+              "height": 1047.425537109375,
+              "radius": 49.641029357910156,
+              "stroke": 2.482051372528076
+            }
+          }
+        },
+        {
+          "id": "daily-feed",
+          "title": "AI daily - AI feed",
+          "src": "/assets/bing-app/features/daily-feed-board.webp?v=16c08be17e1a",
+          "width": 2560,
+          "height": 1440,
+          "video": {
+            "type": "video",
+            "src": "/assets/bing-app/features/daily-feed.mp4?v=7d90778c56eb",
+            "poster": "/assets/bing-app/features/daily-feed-poster.webp?v=f054723800a0",
+            "width": 780,
+            "height": 1690,
+            "frame": {
+              "x": 213,
+              "y": 265,
+              "width": 484,
+              "height": 1047.425537109375,
+              "radius": 49.641029357910156,
+              "stroke": 2.482051372528076
+            }
+          }
+        }
+      ]
     }
   ]
 }

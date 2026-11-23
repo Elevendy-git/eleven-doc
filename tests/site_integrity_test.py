@@ -8,6 +8,7 @@ Run against the source tree, or against a Pages build:
 import argparse
 from html.parser import HTMLParser
 import json
+import math
 from pathlib import Path
 import re
 from urllib.parse import unquote, urljoin, urlsplit
@@ -181,6 +182,50 @@ class IntegrityCheck:
             self.require(page.canonicals == [document_path], f"{relative}: incorrect canonical link: {page.canonicals!r}")
             self.flight(page.scripts, document_path, relative)
 
+    def feature_boards(self, features, project, context):
+        if not isinstance(features, list) or not features:
+            raise ValueError("missing feature boards")
+        ids = set()
+
+        def positive(value):
+            return type(value) in (int, float) and math.isfinite(value) and value > 0
+
+        def asset(value):
+            if not isinstance(value, str) or not value.startswith(self.base + f"assets/{project}/"):
+                raise ValueError("feature asset is outside its project")
+            pathname = unquote(urlsplit(value).path)
+            if "\\" in pathname or any(part in (".", "..") for part in pathname.split("/")):
+                raise ValueError("invalid feature asset path")
+            project_dir = (self.site / "assets" / project).resolve()
+            if not (self.site / pathname[len(self.base):]).resolve().is_relative_to(project_dir):
+                raise ValueError("feature asset is outside its project")
+            self.reference(value, self.base, context)
+
+        for feature in features:
+            if not isinstance(feature, dict) or not isinstance(feature.get("id"), str) or not re.fullmatch(r"[A-Za-z0-9_-]+", feature["id"]) or feature["id"] in ids:
+                raise ValueError("missing, invalid or duplicate feature ID")
+            ids.add(feature["id"])
+            if not isinstance(feature.get("title"), str) or not feature["title"].strip():
+                raise ValueError("missing feature title")
+            if any(type(feature.get(key)) is not int or not positive(feature[key]) for key in ("width", "height")):
+                raise ValueError("invalid feature board dimensions")
+            asset(feature.get("src"))
+            video = feature.get("video")
+            if not isinstance(video, dict) or video.get("type") != "video" or any(type(video.get(key)) is not int or not positive(video[key]) for key in ("width", "height")):
+                raise ValueError("invalid feature video")
+            asset(video.get("src"))
+            asset(video.get("poster"))
+            frame = video.get("frame")
+            if not isinstance(frame, dict) or any(not positive(frame.get(key)) for key in ("width", "height")):
+                raise ValueError("invalid feature video frame dimensions")
+            if any(type(frame.get(key)) not in (int, float) or not math.isfinite(frame[key]) or frame[key] < 0 for key in ("x", "y", "radius")):
+                raise ValueError("invalid feature video frame position")
+            stroke = frame.get("stroke", 0)
+            if type(stroke) not in (int, float) or not math.isfinite(stroke) or stroke < 0:
+                raise ValueError("invalid feature video frame stroke")
+            if frame["x"] + frame["width"] > feature["width"] or frame["y"] + frame["height"] > feature["height"] or frame["radius"] > min(frame["width"], frame["height"]) / 2 or stroke >= min(frame["width"], frame["height"]):
+                raise ValueError("feature video frame exceeds its board")
+
     def manifests(self):
         for project in PROJECTS:
             relative = f"assets/{project}/portfolio-manifest.json"
@@ -218,6 +263,8 @@ class IntegrityCheck:
                         raise ValueError("invalid section type")
                     if "component" in section and section.get("type") != "component":
                         raise ValueError("component configuration requires a component section")
+                    if "features" in section and section.get("type") != "text":
+                        raise ValueError("feature boards require a text section")
                     if section.get("type") == "component":
                         if project != "copilot-macos-ui-kit" or section["id"] != "toast" or section.get("component") != "toast":
                             raise ValueError("unknown portfolio component")
@@ -231,6 +278,11 @@ class IntegrityCheck:
                             paragraphs = section.get("paragraphs", {}).get(locale)
                             if not isinstance(paragraphs, list) or not paragraphs or any(not isinstance(text, str) or not text.strip() for text in paragraphs):
                                 raise ValueError(f"missing or invalid {locale} text paragraphs")
+                        if "features" in section:
+                            if "pages" in section:
+                                raise ValueError("feature boards cannot be mixed with pages")
+                            self.feature_boards(section["features"], project, relative)
+                            continue
                         if "pages" not in section:
                             continue
                     if section.get("placeholder") is True:

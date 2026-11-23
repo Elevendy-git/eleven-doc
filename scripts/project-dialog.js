@@ -293,6 +293,33 @@
     viewer.setAttribute("aria-label", ui.projectContent(config.title));
   }
 
+  function validProjectAsset(path, projectId) {
+    if (typeof path !== "string" || !path.startsWith(`/assets/${projectId}/`)) return false;
+    try {
+      const pathname = decodeURIComponent(path.split(/[?#]/, 1)[0]);
+      return !pathname.includes("\\") && !pathname.split("/").some((part) => part === "." || part === "..");
+    } catch {
+      return false;
+    }
+  }
+
+  function validateFeatureBoards(features, projectId) {
+    if (!Array.isArray(features) || !features.length) throw new Error(ui.invalidMedia);
+    const ids = new Set();
+    const positive = (value) => Number.isFinite(value) && value > 0;
+    for (const feature of features) {
+      if (!feature || typeof feature.id !== "string" || !/^[a-zA-Z0-9_-]+$/.test(feature.id) || ids.has(feature.id) || typeof feature.title !== "string" || !feature.title.trim()) throw new Error(ui.invalidMedia);
+      ids.add(feature.id);
+      if (!Number.isInteger(feature.width) || !positive(feature.width) || !Number.isInteger(feature.height) || !positive(feature.height) || !validProjectAsset(feature.src, projectId)) throw new Error(ui.invalidMedia);
+      const video = feature.video;
+      if (!video || video.type !== "video" || !Number.isInteger(video.width) || !positive(video.width) || !Number.isInteger(video.height) || !positive(video.height) || !validProjectAsset(video.src, projectId) || !validProjectAsset(video.poster, projectId)) throw new Error(ui.invalidMedia);
+      const frame = video.frame;
+      if (!frame || ![frame.x, frame.y, frame.radius, frame.stroke ?? 0].every((value) => Number.isFinite(value) && value >= 0) || !positive(frame.width) || !positive(frame.height)) throw new Error(ui.invalidMedia);
+      const stroke = frame.stroke ?? 0;
+      if (frame.x + frame.width > feature.width || frame.y + frame.height > feature.height || frame.radius > Math.min(frame.width, frame.height) / 2 || stroke >= Math.min(frame.width, frame.height)) throw new Error(ui.invalidMedia);
+    }
+  }
+
   async function getManifest(config) {
     if (manifestCache.has(config.id)) return manifestCache.get(config.id);
     if (!manifestRequests.has(config.id)) {
@@ -318,6 +345,7 @@
             ids.add(section.id);
             if (section.type !== undefined && !["image", "video", "text", "component"].includes(section.type)) throw new Error(ui.invalidSections);
             if (section.component !== undefined && section.type !== "component") throw new Error(ui.invalidSections);
+            if (section.features !== undefined && section.type !== "text") throw new Error(ui.invalidSections);
             if (section.layout !== undefined && section.layout !== "media-row") throw new Error(ui.invalidSections);
             if (section.type === "component") {
               if (config.id !== "copilot-macos-ui-kit" || section.id !== "toast" || section.component !== "toast" || ["src", "pages", "layout", "placeholder", "paragraphs", "width", "height"].some((key) => section[key] !== undefined)) throw new Error(ui.invalidSections);
@@ -328,6 +356,11 @@
               for (const locale of ["zh", "en"]) {
                 const paragraphs = section.paragraphs?.[locale];
                 if (!Array.isArray(paragraphs) || !paragraphs.length || paragraphs.some((text) => typeof text !== "string" || !text.trim())) throw new Error(ui.invalidSections);
+              }
+              if (section.features !== undefined) {
+                if (section.pages !== undefined) throw new Error(ui.invalidSections);
+                validateFeatureBoards(section.features, config.id);
+                continue;
               }
               if (section.pages === undefined) continue;
             }
@@ -433,6 +466,39 @@
     return video;
   }
 
+  function createFeatureBoard(data, config) {
+    const board = document.createElement("div");
+    board.className = "project-portfolio-page project-feature-board";
+    board.dataset.featureId = data.id;
+    board.style.aspectRatio = `${data.width} / ${data.height}`;
+    const image = document.createElement("img");
+    image.alt = `${data.title} · ${ui.portfolio(config.title)}`;
+    image.width = data.width;
+    image.height = data.height;
+    image.loading = "lazy";
+    image.decoding = "async";
+    image.addEventListener("load", () => board.classList.add("is-loaded"));
+    image.addEventListener("error", () => mediaFailed(board, image));
+    image.src = data.src;
+
+    const videoFrame = document.createElement("div");
+    videoFrame.className = "project-feature-video-frame";
+    const frame = data.video.frame;
+    // The exported board already contains the original white stroke and shadow.
+    const inset = (frame.stroke ?? 0) / 2;
+    const width = frame.width - inset * 2;
+    const height = frame.height - inset * 2;
+    const radius = Math.max(0, frame.radius - inset);
+    videoFrame.style.left = `${(frame.x + inset) / data.width * 100}%`;
+    videoFrame.style.top = `${(frame.y + inset) / data.height * 100}%`;
+    videoFrame.style.width = `${width / data.width * 100}%`;
+    videoFrame.style.height = `${height / data.height * 100}%`;
+    videoFrame.style.borderRadius = `${radius / width * 100}% / ${radius / height * 100}%`;
+    videoFrame.append(createPortfolioVideo(data.video, videoFrame, data.title));
+    board.append(image, videoFrame);
+    return board;
+  }
+
   function createVideoGroup(videos, title) {
     let active = false;
     let userPaused = false;
@@ -529,7 +595,7 @@
     return stage;
   }
 
-  function renderPortfolio(data, config) {
+  function renderPortfolio(data, config, initialSectionId) {
     manifest = data;
     configureDialog(config, typeof data.period === "string" ? data.period.trim() : config.period || "");
     directory.replaceChildren();
@@ -586,6 +652,12 @@
       }
       if (item.type === "text") {
         section.append(createPortfolioText(item, chapterTitle));
+        if (item.features) {
+          section.classList.add("has-intro-media");
+          item.features.forEach((feature) => section.append(createFeatureBoard(feature, config)));
+          pages.append(section);
+          return;
+        }
         if (!item.pages) {
           pages.append(section);
           return;
@@ -648,12 +720,16 @@
     dialog.querySelector(".project-dialog-mobile-nav").hidden = false;
     viewer.setAttribute("aria-busy", "false");
     viewer.scrollTo({ top: 0, left: 0, behavior: "instant" });
-    setActiveSection(data.sections[0].id);
+    const initialSection = data.sections.find((section) => section.id === initialSectionId) || data.sections[0];
+    setActiveSection(initialSection.id);
+    if (!config.singleSection && initialSection !== data.sections[0]) {
+      viewer.scrollTo({ top: viewer.querySelector("#project-section-" + initialSection.id).offsetTop, left: 0, behavior: "instant" });
+    }
     observePortfolioVideos();
 
   }
 
-  async function loadPortfolio() {
+  async function loadPortfolio(initialSectionId) {
     const requestedProject = project;
     const token = ++loadingToken;
     stopPortfolioVideos();
@@ -667,13 +743,21 @@
     viewer.innerHTML = `<div class="project-dialog-state" role="status"><span class="project-dialog-spinner" aria-hidden="true"></span><p>${ui.loading}</p></div>`;
     try {
       const data = await getManifest(requestedProject);
-      if (token === loadingToken && dialog.open && project === requestedProject) renderPortfolio(data, requestedProject);
+      if (token === loadingToken && dialog.open && project === requestedProject) renderPortfolio(data, requestedProject, initialSectionId);
     } catch {
       if (token !== loadingToken || !dialog.open || project !== requestedProject) return;
       viewer.setAttribute("aria-busy", "false");
       viewer.innerHTML = `<div class="project-dialog-state" role="status"><p>${ui.loadFailed}</p><button type="button" class="project-dialog-retry">${ui.retry}</button>${requestedProject.figmaUrl ? `<a href="${requestedProject.figmaUrl}" target="_blank" rel="noopener noreferrer">${ui.viewFigma} <span aria-hidden="true">↗</span></a>` : ""}</div>`;
-      viewer.querySelector(".project-dialog-retry").addEventListener("click", loadPortfolio);
+      viewer.querySelector(".project-dialog-retry").addEventListener("click", () => loadPortfolio(initialSectionId));
     }
+  }
+
+  function openPortfolio(config, trigger, event, initialSectionId) {
+    if (!dialog) createDialog();
+    if (dialog.open) return;
+    project = config;
+    configureDialog(config);
+    controller.open(trigger, event, () => loadPortfolio(initialSectionId));
   }
 
   document.addEventListener("click", (event) => {
@@ -683,10 +767,40 @@
     const config = projects[trigger.dataset.projectOpen];
     event.preventDefault();
     event.stopPropagation();
-    if (!dialog) createDialog();
-    if (dialog.open) return;
-    project = config;
-    configureDialog(config);
-    controller.open(trigger, event, loadPortfolio);
+    openPortfolio(config, trigger, event);
   }, true);
+
+  function readPortfolioLink(search) {
+    const parameters = new URLSearchParams(search);
+    const id = parameters.get("project");
+    return Object.hasOwn(projects, id) ? { config: projects[id], sectionId: parameters.get("section") } : null;
+  }
+
+  function openLinkedPortfolio() {
+    const linked = readPortfolioLink(location.search);
+    if (!linked) return;
+    let scheduled = false;
+    let finished = false;
+    const isReady = () => !document.documentElement.classList.contains("is-booting") && !document.querySelector(".site-loader");
+    const observer = new MutationObserver(ready);
+    function ready() {
+      if (finished || scheduled || !isReady()) return;
+      scheduled = true;
+      // Wait until hydration has finished replacing the server-rendered cards.
+      window.requestAnimationFrame(() => window.requestAnimationFrame(() => {
+        scheduled = false;
+        if (!isReady()) return;
+        const trigger = document.querySelector(`${triggerSelector}[data-project-open="${linked.config.id}"]`);
+        if (!trigger || trigger.matches(":disabled")) return;
+        finished = true;
+        observer.disconnect();
+        openPortfolio(linked.config, trigger, { detail: 0 }, linked.sectionId);
+      }));
+    }
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"], childList: true, subtree: true });
+    ready();
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", openLinkedPortfolio, { once: true });
+  else openLinkedPortfolio();
 })();

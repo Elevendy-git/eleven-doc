@@ -36,6 +36,7 @@ jobs:
           node tests/language-navigation.test.cjs
           node tests/card-interaction.test.cjs
           node tests/dialog-controller.test.cjs
+          node tests/project-features.test.cjs
           node tests/hero-interactions.test.cjs
           node tests/toast-showcase.test.cjs
       - name: Upload website artifact
