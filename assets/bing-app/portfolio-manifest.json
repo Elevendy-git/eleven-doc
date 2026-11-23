@@ -53,24 +53,7 @@
           "In the SERP and webpage views, we’ve implemented an AI summary function, allowing users to generate concise summaries based on search results or webpage content by clicking the AI summary option in the footer.",
           "These enhancements aim to provide a smarter, more efficient browsing experience, making it easier for users to access key information at a glance."
         ]
-      },
-      "pages": [
-        {
-          "src": "/assets/bing-app/china-ai-01-homepage.webp?v=d3bae4563797",
-          "width": 2560,
-          "height": 1440
-        },
-        {
-          "src": "/assets/bing-app/china-ai-02-summary-serp.webp?v=fff3e93dd9b3",
-          "width": 2560,
-          "height": 1440
-        },
-        {
-          "src": "/assets/bing-app/china-ai-03-summary-webpage.webp?v=ee0740d972de",
-          "width": 2560,
-          "height": 1440
-        }
-      ]
+      }
     }
   ]
 }
