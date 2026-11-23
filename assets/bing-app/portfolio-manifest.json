@@ -9,34 +9,6 @@
     { "id": "global-recent", "group": "global", "title": "Recent", "placeholder": true },
     { "id": "china-fre", "group": "china", "title": "Homepage redesign", "placeholder": true },
     { "id": "china-ai-summary", "group": "china", "title": "AI summary", "placeholder": true },
-    {
-      "id": "china-ai-daily",
-      "group": "china",
-      "title": "AI Daily",
-      "layout": "media-row",
-      "pages": [
-        {
-          "type": "video",
-          "src": "/assets/bing-app/ai-daily.mp4",
-          "poster": "/assets/bing-app/ai-daily-poster.webp",
-          "width": 1008,
-          "height": 1904
-        },
-        {
-          "type": "video",
-          "src": "/assets/bing-app/ai-daily-02.mp4",
-          "poster": "/assets/bing-app/ai-daily-02-poster.webp",
-          "width": 1008,
-          "height": 1904
-        },
-        {
-          "type": "video",
-          "src": "/assets/bing-app/ai-daily-03.mp4",
-          "poster": "/assets/bing-app/ai-daily-03-poster.webp",
-          "width": 1008,
-          "height": 1904
-        }
-      ]
-    }
+    { "id": "china-ai-daily", "group": "china", "title": "AI Daily", "placeholder": true }
   ]
 }
