@@ -324,12 +324,12 @@
               continue;
             }
             if (section.type === "text") {
-              if (section.pages !== undefined || section.layout !== undefined || section.placeholder !== undefined) throw new Error(ui.invalidSections);
+              if (section.layout !== undefined || section.placeholder !== undefined) throw new Error(ui.invalidSections);
               for (const locale of ["zh", "en"]) {
                 const paragraphs = section.paragraphs?.[locale];
                 if (!Array.isArray(paragraphs) || !paragraphs.length || paragraphs.some((text) => typeof text !== "string" || !text.trim())) throw new Error(ui.invalidSections);
               }
-              continue;
+              if (section.pages === undefined) continue;
             }
             if (section.placeholder === true) continue;
             const media = section.pages === undefined ? [section] : section.pages;
@@ -586,8 +586,11 @@
       }
       if (item.type === "text") {
         section.append(createPortfolioText(item, chapterTitle));
-        pages.append(section);
-        return;
+        if (!item.pages) {
+          pages.append(section);
+          return;
+        }
+        section.classList.add("has-intro-media");
       }
       if (item.placeholder === true) {
         const placeholder = document.createElement("div");

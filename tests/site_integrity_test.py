@@ -225,13 +225,14 @@ class IntegrityCheck:
                             raise ValueError("component sections cannot contain text, media or placeholders")
                         continue
                     if section.get("type") == "text":
-                        if any(key in section for key in ("pages", "layout", "placeholder")):
-                            raise ValueError("text sections cannot contain media or placeholders")
+                        if any(key in section for key in ("layout", "placeholder")):
+                            raise ValueError("text sections cannot contain media rows or placeholders")
                         for locale in ("zh", "en"):
                             paragraphs = section.get("paragraphs", {}).get(locale)
                             if not isinstance(paragraphs, list) or not paragraphs or any(not isinstance(text, str) or not text.strip() for text in paragraphs):
                                 raise ValueError(f"missing or invalid {locale} text paragraphs")
-                        continue
+                        if "pages" not in section:
+                            continue
                     if section.get("placeholder") is True:
                         continue
                     media_row = section.get("layout") == "media-row"

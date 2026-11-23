@@ -23,9 +23,20 @@
           "Additionally, we are highlighting the global/domestic mode switcher and making it more intuitive and user-friendly.",
           "To further elevate engagement, we are introducing more motion elements to create a smoother, more delightful user experience."
         ]
-      }
+      },
+      "pages": [
+        {
+          "src": "/assets/bing-app/china-homepage-01-fre.webp?v=32b842e829af",
+          "width": 2560,
+          "height": 1440
+        },
+        {
+          "src": "/assets/bing-app/china-homepage-02-redesign-tooltips.webp?v=19fc1ade812f",
+          "width": 2560,
+          "height": 1440
+        }
+      ]
     },
-    { "id": "china-ai-summary", "group": "china", "title": "AI summary", "placeholder": true },
-    { "id": "china-ai-daily", "group": "china", "title": "AI Daily", "placeholder": true }
+    { "id": "china-ai", "group": "china", "title": "Bing China AI", "placeholder": true }
   ]
 }
