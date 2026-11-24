@@ -14,7 +14,7 @@ const feature = {
     frame: { x: 213, y: 265, width: 484, height: 1047.425537109375, radius: 49.641029357910156, stroke: 2.482051372528076 },
   },
 };
-const ui = { invalidMedia: 'invalid media', invalidSections: 'invalid sections', video: title => `${title} prototype demo`, portfolio: title => `${title} portfolio` };
+const ui = { invalidMedia: 'invalid media', invalidSections: 'invalid sections', pauseVideo: 'Pause video', playVideo: 'Play video', video: title => `${title} prototype demo`, portfolio: title => `${title} portfolio` };
 const validation = vm.createContext({ ui, URLSearchParams, projects: { 'bing-app': { id: 'bing-app' } } });
 vm.runInContext(functionsBetween('validProjectAsset', 'async function getManifest') + functionsBetween('readPortfolioLink', 'function openLinkedPortfolio'), validation);
 validation.validateFeatureBoards([feature], 'bing-app');
@@ -55,19 +55,26 @@ class Node {
     this.attributes = {};
     this.events = {};
     this.classList = { add() {}, remove() {} };
+    if (tag === 'video') { this.paused = true; this.plays = 0; this.pauses = 0; }
   }
   append(...children) { this.children.push(...children); }
   addEventListener(type, callback) { this.events[type] = callback; }
+  removeEventListener(type) { delete this.events[type]; }
   setAttribute(name, value) { this.attributes[name] = value; }
+  closest() { return this.hiddenSection ? {} : null; }
+  play() { this.paused = false; this.plays++; this.events.play?.(); return Promise.resolve(); }
+  pause() { this.paused = true; this.pauses++; this.events.pause?.(); }
 }
+const featureVideoControls = new Map();
 const rendering = vm.createContext({
   ui, document: { createElement: tag => new Node(tag) }, mediaFailed() {},
+  featureVideoControls, dialog: { open: true }, viewer: { contains: () => true },
 });
 vm.runInContext(functionsBetween('createPortfolioVideo', 'function createVideoGroup'), rendering);
 const board = rendering.createFeatureBoard(feature, { title: 'Bing App' });
 assert.equal(board.style.aspectRatio, '2560 / 1440');
 assert.equal(board.dataset.featureId, 'ai-search');
-assert.equal(board.children.length, 2, 'The board has only its original image and video overlay.');
+assert.equal(board.children.length, 2, 'The hover control stays inside the existing video overlay.');
 const [image, frame] = board.children;
 assert.equal(image.alt, 'AI Search · Bing App portfolio');
 assert.equal(image.width, 2560);
@@ -79,7 +86,7 @@ assert.equal(video.loop, true);
 assert.equal(video.playsInline, true);
 assert.equal(video.preload, 'none');
 assert.equal(video.tabIndex, -1);
-assert.equal(video.controls, undefined, 'The recording does not expose playback controls.');
+assert.equal(video.controls, undefined, 'The recording uses a separate control instead of native video controls.');
 assert.equal(video.src, feature.video.src);
 assert.equal(video.poster, feature.video.poster);
 // Reconstruct source-board pixels from the responsive percentages. The
@@ -90,6 +97,31 @@ assert.ok(Math.abs(parseFloat(frame.style.top) / 100 * 1440 - (265 + inset)) < 1
 assert.ok(Math.abs(parseFloat(frame.style.width) / 100 * 2560 - (484 - 2 * inset)) < 1e-8);
 assert.ok(Math.abs(parseFloat(frame.style.height) / 100 * 1440 - (1047.425537109375 - 2 * inset)) < 1e-8);
 assert.match(frame.style.borderRadius, /% \/ .*%$/);
+const control = featureVideoControls.get(video);
+const toggle = frame.children[1];
+assert.equal(toggle.className, 'project-video-toggle project-feature-video-toggle');
+assert.equal(toggle.attributes['aria-label'], 'Play video · AI Search');
+control.setActive(true);
+assert.equal(video.paused, false, 'Visible videos autoplay initially.');
+assert.equal(toggle.attributes['aria-label'], 'Pause video · AI Search');
+toggle.events.click();
+assert.equal(video.paused, true);
+control.setActive(false);
+control.setActive(true);
+assert.equal(video.paused, true, 'A manual pause survives leaving and reentering the viewport.');
+const secondVideo = new Node('video');
+const secondToggle = rendering.createFeatureVideoControl(secondVideo, 'Second');
+const secondControl = featureVideoControls.get(secondVideo);
+secondControl.setActive(true);
+assert.equal(secondVideo.paused, false, 'Pausing one prototype does not pause another.');
+toggle.events.click();
+assert.equal(video.paused, false);
+control.setActive(false);
+assert.equal(video.paused, true);
+toggle.events.click();
+assert.equal(video.paused, false, 'The user can play from a visible control below the visibility threshold.');
+control.setActive(false);
+assert.equal(video.paused, true, 'Leaving the viewport stops an explicitly resumed video too.');
 
 const videos = [0, 1, 2, 3].map(() => ({
   plays: 0, pauses: 0, closest() { return null; },
@@ -98,7 +130,7 @@ const videos = [0, 1, 2, 3].map(() => ({
 const observers = [];
 const dialog = { open: true };
 const lifecycle = vm.createContext({
-  videoRows: new Map(), dialog, videoObserver: undefined,
+  videoRows: new Map(), featureVideoControls: new Map(), dialog, videoObserver: undefined,
   viewer: { querySelectorAll: () => videos, contains: video => videos.includes(video) },
   IntersectionObserver: class {
     constructor(callback, options) { this.callback = callback; this.options = options; this.targets = []; observers.push(this); }
@@ -171,11 +203,54 @@ async function manifest(data) {
   return context.getManifest({ id: 'bing-app' });
 }
 (async () => {
+  const blockedVideo = new Node('video');
+  blockedVideo.play = function () { this.plays++; return Promise.reject(new Error('Autoplay blocked')); };
+  const blockedToggle = rendering.createFeatureVideoControl(blockedVideo, 'Blocked');
+  const blockedControl = featureVideoControls.get(blockedVideo);
+  blockedControl.setActive(true);
+  await Promise.resolve();
+  assert.equal(blockedToggle.attributes['aria-label'], 'Play video · Blocked');
+  blockedVideo.play = Node.prototype.play;
+  blockedToggle.events.click();
+  assert.equal(blockedVideo.paused, false, 'A click retries blocked playback.');
+  blockedVideo.hiddenSection = true;
+  blockedControl.setActive(true);
+  blockedToggle.events.click();
+  assert.equal(blockedVideo.paused, true, 'Controls cannot restart a hidden chapter.');
+  let rejectOldPlay;
+  const rapidVideo = new Node('video');
+  rapidVideo.play = function () {
+    this.paused = false;
+    this.events.play?.();
+    return new Promise((resolve, reject) => { rejectOldPlay = reject; });
+  };
+  const rapidToggle = rendering.createFeatureVideoControl(rapidVideo, 'Rapid');
+  featureVideoControls.get(rapidVideo).setActive(true);
+  rapidToggle.events.click();
+  assert.equal(rapidVideo.paused, true);
+  rapidVideo.play = Node.prototype.play;
+  rapidToggle.events.click();
+  rejectOldPlay(new Error('Old request aborted'));
+  await Promise.resolve();
+  assert.equal(rapidVideo.paused, false);
+  assert.equal(rapidToggle.attributes['aria-label'], 'Pause video · Rapid', 'An old rejected request cannot overwrite a newer successful play.');
+  const featureObserver = observers[0];
+  lifecycle.featureVideoControls.set(videos[2], { setActive: next => { lifecycle.featureActive = next; }, destroy() { lifecycle.featureDestroyed = true; } });
+  dialog.open = true;
+  featureObserver.callback([{ target: videos[2], isIntersecting: true, intersectionRatio: 1 }]);
+  assert.equal(lifecycle.featureActive, true, 'The observer delegates controlled prototypes.');
+  dialog.open = false;
+  lifecycle.stopPortfolioVideos();
+  assert.equal(lifecycle.featureDestroyed, true);
+  assert.equal(lifecycle.featureVideoControls.size, 0);
+  control.destroy();
+  assert.equal(video.paused, true);
+  assert.equal(toggle.events.click, undefined, 'Closing removes stale controls.');
   const text = { id: 'china-ai', title: 'Bing China AI', type: 'text', paragraphs: { zh: ['介绍'], en: ['Introduction'] } };
   await manifest({ sections: [text] });
   await manifest({ sections: [{ ...text, features: [feature] }] });
   await assert.rejects(manifest({ sections: [{ ...text, features: [feature], pages: [feature] }] }), /invalid sections/);
   await assert.rejects(manifest({ sections: [{ id: 'image', title: 'Image', features: [feature] }] }), /invalid sections/);
   await assert.rejects(manifest({ sections: [{ ...text, features: [] }] }), /invalid media/);
-  console.log('Passed: feature assets/frame validation, responsive stroke-preserving geometry, silent video lifecycle, compatible text manifests, and hydration-safe whitelisted links.');
+  console.log('Passed: feature assets/frame validation, responsive geometry, independent playback controls, persistent manual pause, blocked-play retry, close cleanup, text manifests, and hydration-safe links.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

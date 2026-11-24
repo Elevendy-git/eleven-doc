@@ -91,8 +91,14 @@ html.has-cursor-fx.project-dialog-cursor-active .project-dialog::backdrop { curs
 .has-intro-media .project-portfolio-page + .project-portfolio-page { margin-top: 16px; }
 .project-feature-board { isolation: isolate; }
 .project-feature-board:not(.is-loaded) { background: transparent; }
-.project-feature-video-frame { position: absolute; overflow: hidden; pointer-events: none; }
+.project-feature-video-frame { position: absolute; overflow: hidden; }
 .project-feature-video-frame .project-portfolio-video { display: block; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; border-radius: 0; background: transparent; object-fit: cover; pointer-events: none; }
+.project-feature-video-frame .project-feature-video-toggle { position: absolute; z-index: 1; top: 50%; left: 50%; right: auto; bottom: auto; transform: translate(-50%, -50%); opacity: 0; pointer-events: none; transition: opacity .15s ease; box-shadow: 0 2px 8px #0000000d; }
+.project-feature-video-frame:hover .project-feature-video-toggle,
+.project-dialog[data-dialog-input='keyboard'] .project-feature-video-frame:focus-within .project-feature-video-toggle { opacity: 1; pointer-events: auto; }
+@media (hover: none), (pointer: coarse) {
+  .project-feature-video-frame .project-feature-video-toggle { opacity: 1; pointer-events: auto; }
+}
 .project-placeholder-message { margin: 12px 0 32px; color: var(--project-muted); font-size: 13px; line-height: 1.6; }
 .project-content-placeholder img { width: 100%; max-height: 45dvh; object-fit: contain; border-radius: 12px; }
 .project-video-stage { box-sizing: border-box; display: flex; flex-direction: column; align-items: flex-start; gap: 24px; min-height: calc(100dvh - 66px); padding: 32px clamp(28px, 6vw, 88px); background: #fafaf9; }

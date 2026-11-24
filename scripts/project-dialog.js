@@ -23,6 +23,8 @@
     videoPlaceholder: "Video coming soon",
     pauseVideos: "Pause all videos",
     playVideos: "Play all videos",
+    pauseVideo: "Pause video",
+    playVideo: "Play video",
     portfolio: (title) => title + " portfolio",
     closePortfolio: (title) => "Close " + title + " portfolio",
     projectDirectory: (title) => title + " portfolio contents",
@@ -50,6 +52,8 @@
     videoPlaceholder: "视频待补充",
     pauseVideos: "暂停全部视频",
     playVideos: "播放全部视频",
+    pauseVideo: "暂停视频",
+    playVideo: "播放视频",
     portfolio: (title) => title + " 作品集",
     closePortfolio: (title) => "关闭 " + title + " 作品集",
     projectDirectory: (title) => title + " 作品集目录",
@@ -149,6 +153,7 @@
   let controller;
   let videoObserver;
   const videoRows = new Map();
+  const featureVideoControls = new Map();
   const portfolioComponents = new Set();
   let loadingToken = 0;
 
@@ -161,6 +166,8 @@
     videoObserver?.disconnect();
     videoRows.forEach((row) => row.setActive(false));
     videoRows.clear();
+    featureVideoControls.forEach((control) => control.destroy());
+    featureVideoControls.clear();
     viewer.querySelectorAll("video").forEach((video) => {
       video.autoplay = false;
       video.pause();
@@ -172,7 +179,11 @@
     if (!videos.length) return;
     videoObserver = new IntersectionObserver((entries) => {
       entries.forEach(({ target: video, isIntersecting, intersectionRatio }) => {
-        if (dialog.open && viewer.contains(video) && isIntersecting && intersectionRatio >= .5) {
+        const active = dialog.open && viewer.contains(video) && isIntersecting && intersectionRatio >= .5;
+        const control = featureVideoControls.get(video);
+        if (control) {
+          control.setActive(active);
+        } else if (active) {
           video.autoplay = true;
           video.play().catch(() => {});
         } else {
@@ -403,7 +414,9 @@
         if (media instanceof HTMLVideoElement) {
           media.load();
           const row = videoRows.get(media.closest(".project-portfolio-section")?.dataset.sectionId);
-          if (row) row.sync();
+          const control = featureVideoControls.get(media);
+          if (control) control.sync();
+          else if (row) row.sync();
           else media.play().catch(() => {});
         } else {
           const src = media.getAttribute("src");
@@ -466,6 +479,74 @@
     return video;
   }
 
+  function updateVideoToggle(button, paused, label) {
+    button.setAttribute("aria-label", label);
+    button.title = label;
+    button.innerHTML = paused
+      ? '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5a.5.5 0 0 1 .75-.43l9 5.5a.5.5 0 0 1 0 .86l-9 5.5a.5.5 0 0 1-.75-.43z"/></svg>'
+      : '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="3" y="2" width="3" height="12" rx=".6"/><rect x="10" y="2" width="3" height="12" rx=".6"/></svg>';
+  }
+
+  function createFeatureVideoControl(video, title) {
+    let active = false;
+    let userPaused = false;
+    let playBlocked = false;
+    let playRequest = 0;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "project-video-toggle project-feature-video-toggle";
+    const update = () => {
+      const paused = video.paused || userPaused || playBlocked;
+      updateVideoToggle(button, paused, `${paused ? ui.playVideo : ui.pauseVideo} · ${title}`);
+    };
+    const sync = (explicitPlay = false) => {
+      const request = ++playRequest;
+      const shouldPlay = dialog.open && viewer.contains(video) && !video.closest(".project-portfolio-section[hidden]") && !userPaused && (active || explicitPlay);
+      video.autoplay = shouldPlay;
+      playBlocked = false;
+      if (!shouldPlay) {
+        video.pause();
+        update();
+        return;
+      }
+      Promise.resolve(video.play()).catch(() => {
+        if (request !== playRequest || !dialog.open || userPaused) return;
+        playBlocked = true;
+        update();
+      });
+      update();
+    };
+    const toggle = () => {
+      const play = video.paused || userPaused || playBlocked;
+      userPaused = !play;
+    // An explicit click can resume a video that is less than half visible.
+      sync(play);
+    };
+    button.addEventListener("click", toggle);
+    video.addEventListener("play", update);
+    video.addEventListener("pause", update);
+    update();
+    const control = {
+      button,
+      sync,
+      setActive(next) {
+        active = next;
+        sync();
+      },
+      destroy() {
+        active = false;
+        ++playRequest;
+        video.autoplay = false;
+        video.pause();
+        button.removeEventListener("click", toggle);
+        video.removeEventListener("play", update);
+        video.removeEventListener("pause", update);
+      },
+    };
+    featureVideoControls.set(video, control);
+    return button;
+  }
+
   function createFeatureBoard(data, config) {
     const board = document.createElement("div");
     board.className = "project-portfolio-page project-feature-board";
@@ -494,7 +575,8 @@
     videoFrame.style.width = `${width / data.width * 100}%`;
     videoFrame.style.height = `${height / data.height * 100}%`;
     videoFrame.style.borderRadius = `${radius / width * 100}% / ${radius / height * 100}%`;
-    videoFrame.append(createPortfolioVideo(data.video, videoFrame, data.title));
+    const video = createPortfolioVideo(data.video, videoFrame, data.title);
+    videoFrame.append(video, createFeatureVideoControl(video, data.title));
     board.append(image, videoFrame);
     return board;
   }
@@ -510,11 +592,7 @@
     const update = () => {
       const paused = userPaused || playBlocked;
       const label = `${paused ? ui.playVideos : ui.pauseVideos} · ${title}`;
-      button.setAttribute("aria-label", label);
-      button.title = label;
-      button.innerHTML = paused
-        ? '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2.5a.5.5 0 0 1 .75-.43l9 5.5a.5.5 0 0 1 0 .86l-9 5.5a.5.5 0 0 1-.75-.43z"/></svg>'
-        : '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><rect x="3" y="2" width="3" height="12" rx=".6"/><rect x="10" y="2" width="3" height="12" rx=".6"/></svg>';
+      updateVideoToggle(button, paused, label);
     };
     const sync = () => {
       const request = ++playRequest;
