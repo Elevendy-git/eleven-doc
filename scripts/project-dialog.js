@@ -113,11 +113,13 @@
     "bing-app": {
       id: "bing-app",
       title: "Bing App",
+      contentLayout: "boards",
       singleSection: true,
     },
     "copilot-macos-ui-kit": {
       id: "copilot-macos-ui-kit",
       title: "Copilot macOS UI Kit",
+      contentLayout: "boards",
     },
     delysium: {
       id: "delysium",
@@ -293,6 +295,7 @@
 
   function configureDialog(config, period = config.period || "") {
     dialog.dataset.projectId = config.id;
+    dialog.dataset.contentLayout = config.contentLayout || "";
     dialog.setAttribute("aria-label", ui.portfolio(config.title));
     dialog.querySelector("#project-dialog-title").textContent = config.title;
     const dates = dialog.querySelector(".project-dialog-heading p");
