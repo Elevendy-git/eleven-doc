@@ -279,10 +279,7 @@ class IntegrityCheck:
                             if not isinstance(paragraphs, list) or not paragraphs or any(not isinstance(text, str) or not text.strip() for text in paragraphs):
                                 raise ValueError(f"missing or invalid {locale} text paragraphs")
                         if "features" in section:
-                            if "pages" in section:
-                                raise ValueError("feature boards cannot be mixed with pages")
                             self.feature_boards(section["features"], project, relative)
-                            continue
                         if "pages" not in section:
                             continue
                     if section.get("placeholder") is True:

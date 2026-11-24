@@ -372,9 +372,7 @@
                 if (!Array.isArray(paragraphs) || !paragraphs.length || paragraphs.some((text) => typeof text !== "string" || !text.trim())) throw new Error(ui.invalidSections);
               }
               if (section.features !== undefined) {
-                if (section.pages !== undefined) throw new Error(ui.invalidSections);
                 validateFeatureBoards(section.features, config.id);
-                continue;
               }
               if (section.pages === undefined) continue;
             }
@@ -740,13 +738,7 @@
       }
       if (item.type === "text") {
         section.append(createPortfolioText(item, chapterTitle));
-        if (item.features) {
-          section.classList.add("has-intro-media");
-          item.features.forEach((feature) => section.append(createFeatureBoard(feature, config)));
-          pages.append(section);
-          return;
-        }
-        if (!item.pages) {
+        if (!item.pages && !item.features) {
           pages.append(section);
           return;
         }
@@ -770,38 +762,38 @@
         pages.append(section);
         return;
       }
-      const media = item.pages || [item];
-      if (item.layout === "media-row") {
+      const media = item.pages || (item.type === "text" ? [] : [item]);
+      if (item.layout === "media-row" && media.length) {
         section.append(createVideoRow(media, chapterTitle, item.id));
-        pages.append(section);
-        return;
-      }
-      media.forEach((mediaData, pageIndex) => {
-        const page = document.createElement("div");
-        page.className = "project-portfolio-page";
-        if (mediaData.type === "video") {
-          page.classList.add("project-video-stage");
-          page.append(createVideoHeading(chapterTitle), createPortfolioVideo(mediaData, page, chapterTitle));
+      } else {
+        media.forEach((mediaData, pageIndex) => {
+          const page = document.createElement("div");
+          page.className = "project-portfolio-page";
+          if (mediaData.type === "video") {
+            page.classList.add("project-video-stage");
+            page.append(createVideoHeading(chapterTitle), createPortfolioVideo(mediaData, page, chapterTitle));
+            section.append(page);
+            return;
+          }
+          const image = document.createElement("img");
+          image.alt = chapterTitle + (media.length > 1 ? ui.page(pageIndex + 1) : "") + " · " + ui.portfolio(config.title);
+          image.width = Number(mediaData.width);
+          image.height = Number(mediaData.height);
+          image.loading = index === 0 && pageIndex === 0 ? "eager" : "lazy";
+          image.decoding = "async";
+          image.addEventListener("load", () => {
+            page.classList.add("is-loaded");
+            page.classList.remove("has-media-error");
+            page.querySelector(".project-media-error")?.remove();
+            if (section.querySelectorAll(".project-portfolio-page:not(.project-feature-board).is-loaded").length === media.length) section.classList.add("is-loaded");
+          });
+          image.addEventListener("error", () => mediaFailed(page, image));
+          image.src = mediaData.src;
+          page.append(image);
           section.append(page);
-          return;
-        }
-        const image = document.createElement("img");
-        image.alt = chapterTitle + (media.length > 1 ? ui.page(pageIndex + 1) : "") + " · " + ui.portfolio(config.title);
-        image.width = Number(mediaData.width);
-        image.height = Number(mediaData.height);
-        image.loading = index === 0 && pageIndex === 0 ? "eager" : "lazy";
-        image.decoding = "async";
-        image.addEventListener("load", () => {
-          page.classList.add("is-loaded");
-          page.classList.remove("has-media-error");
-          page.querySelector(".project-media-error")?.remove();
-          if (section.querySelectorAll(".project-portfolio-page.is-loaded").length === media.length) section.classList.add("is-loaded");
         });
-        image.addEventListener("error", () => mediaFailed(page, image));
-        image.src = mediaData.src;
-        page.append(image);
-        section.append(page);
-      });
+      }
+      item.features?.forEach((feature) => section.append(createFeatureBoard(feature, config)));
       pages.append(section);
     });
     viewer.replaceChildren(pages);

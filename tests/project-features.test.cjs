@@ -14,7 +14,7 @@ const feature = {
     frame: { x: 213, y: 265, width: 484, height: 1047.425537109375, radius: 49.641029357910156, stroke: 2.482051372528076 },
   },
 };
-const ui = { invalidMedia: 'invalid media', invalidSections: 'invalid sections', pauseVideo: 'Pause video', playVideo: 'Play video', video: title => `${title} prototype demo`, portfolio: title => `${title} portfolio` };
+const ui = { invalidMedia: 'invalid media', invalidSections: 'invalid sections', emptyPages: 'empty pages', pauseVideo: 'Pause video', playVideo: 'Play video', video: title => `${title} prototype demo`, portfolio: title => `${title} portfolio` };
 const validation = vm.createContext({ ui, URLSearchParams, projects: { 'bing-app': { id: 'bing-app' } } });
 vm.runInContext(functionsBetween('validProjectAsset', 'async function getManifest') + functionsBetween('readPortfolioLink', 'function openLinkedPortfolio'), validation);
 validation.validateFeatureBoards([feature], 'bing-app');
@@ -266,8 +266,15 @@ async function manifest(data) {
   const text = { id: 'china-ai', title: 'Bing China AI', type: 'text', paragraphs: { zh: ['介绍'], en: ['Introduction'] } };
   await manifest({ sections: [text] });
   await manifest({ sections: [{ ...text, features: [feature] }] });
-  await assert.rejects(manifest({ sections: [{ ...text, features: [feature], pages: [feature] }] }), /invalid sections/);
+  const staticPage = { src: '/assets/bing-app/homepage.webp', width: 2560, height: 1440 };
+  const mixed = { ...text, pages: [staticPage, { ...staticPage, src: '/assets/bing-app/homepage-2.webp' }], features: [feature] };
+  assert.equal((await manifest({ sections: [mixed] })).sections[0].pages.length, 2, 'A text chapter can keep its static pages alongside recording boards.');
+  await assert.rejects(manifest({ sections: [{ ...mixed, pages: [] }] }), /empty pages/);
+  await assert.rejects(manifest({ sections: [{ ...mixed, pages: [{ ...staticPage, src: '/assets/other-project/page.webp' }] }] }), /invalid media/);
+  await assert.rejects(manifest({ sections: [{ ...mixed, pages: [{ ...staticPage, width: 0 }] }] }), /invalid media/);
+  await assert.rejects(manifest({ sections: [{ ...mixed, features: [] }] }), /invalid media/);
+  await assert.rejects(manifest({ sections: [{ ...mixed, features: [{ ...feature, video: { ...feature.video, poster: 'https://example.test/poster.webp' } }] }] }), /invalid media/);
   await assert.rejects(manifest({ sections: [{ id: 'image', title: 'Image', features: [feature] }] }), /invalid sections/);
   await assert.rejects(manifest({ sections: [{ ...text, features: [] }] }), /invalid media/);
-  console.log('Passed: feature assets/frame validation, responsive geometry, independent playback controls, persistent manual pause, blocked-play retry, close cleanup, text manifests, and hydration-safe links.');
+  console.log('Passed: feature assets/frame validation, responsive geometry, independent playback controls, persistent manual pause, blocked-play retry, close cleanup, mixed text manifests, and hydration-safe links.');
 })().catch(error => { console.error(error); process.exitCode = 1; });

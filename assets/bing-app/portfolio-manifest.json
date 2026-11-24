@@ -35,6 +35,30 @@
           "width": 2560,
           "height": 1440
         }
+      ],
+      "features": [
+        {
+          "id": "fre-prototype",
+          "title": "FRE",
+          "src": "/assets/bing-app/features/fre-prototype-board.webp?v=563d8136f98d",
+          "width": 2560,
+          "height": 1440,
+          "video": {
+            "type": "video",
+            "src": "/assets/bing-app/features/fre-prototype.mp4?v=0876d1ca1def",
+            "poster": "/assets/bing-app/features/fre-prototype-poster.webp?v=fe10f8d37e30",
+            "width": 780,
+            "height": 1688,
+            "frame": {
+              "x": 1038,
+              "y": 196,
+              "width": 484,
+              "height": 1047.425537109375,
+              "radius": 49.641029357910156,
+              "stroke": 2.482051372528076
+            }
+          }
+        }
       ]
     },
     {
