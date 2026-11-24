@@ -1,12 +1,8 @@
 {
   "groups": [
-    { "id": "global", "title": "Bing App Global", "shortTitle": "Global" },
     { "id": "china", "title": "Bing China", "shortTitle": "China" }
   ],
   "sections": [
-    { "id": "global-home", "group": "global", "title": "Home page", "placeholder": true },
-    { "id": "global-search", "group": "global", "title": "Search", "placeholder": true },
-    { "id": "global-recent", "group": "global", "title": "Recent", "placeholder": true },
     {
       "id": "china-fre",
       "group": "china",
