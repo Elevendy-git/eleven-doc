@@ -59,7 +59,12 @@
     "基于 Copilot 核心设计系统，补充 macOS 基础规范与 16 个关键组件，提升设计与研发的协作和迭代效率。": "Extending Copilot's core design system with macOS guidelines and 16 key components for better collaboration and faster iteration.",
     "以 MAI 视觉语言重设计 Bing App 首页，优化排版、内容密度与模块层级，让用户更清晰地开始任务。": "Redesigning the Bing App homepage with MAI's visual language, refining typography, content density, and hierarchy to guide users into their next task.",
     "为 macOS 打造原生 Copilot 体验，整合对话、任务与内容创作，让 AI 自然融入日常工作流程。": "Creating a native Copilot experience for macOS, bringing conversations, tasks, and content creation together to make AI a natural part of everyday workflows.",
-    "查看 Copilot macOS UI Kit 详细内容": "View Copilot macOS UI Kit project details"
+    "查看 Copilot macOS UI Kit 详细内容": "View Copilot macOS UI Kit project details",
+    "2025 年度回顾": "2025 Annual Review",
+    "像素叙事 · 互动回顾": "Pixel storytelling · Interactive retrospective",
+    "通过像素风与交互叙事，回顾设计团队的探索、产品交付与工具创新。": "A pixel art retrospective of the design team’s exploration, product delivery, and tool building.",
+    "打开 2025 年度回顾项目": "Open the 2025 Annual Review project",
+    "2025 年度回顾的像素风互动页面": "Pixel art interactive page for the 2025 Annual Review"
   },
   "experienceDescriptions": {
     "microsoft": "Designing product experiences for Bing App, Copilot Mac, and AI agents.",
