@@ -497,6 +497,7 @@
     button.className = "project-video-toggle project-feature-video-toggle";
     const update = () => {
       const paused = video.paused || userPaused || playBlocked;
+      button.dataset.paused = String(paused);
       updateVideoToggle(button, paused, `${paused ? ui.playVideo : ui.pauseVideo} · ${title}`);
     };
     const sync = (explicitPlay = false) => {
@@ -516,7 +517,8 @@
       });
       update();
     };
-    const toggle = () => {
+    const toggle = (event) => {
+      event?.stopPropagation();
       const play = video.paused || userPaused || playBlocked;
       userPaused = !play;
     // An explicit click can resume a video that is less than half visible.
@@ -528,6 +530,7 @@
     update();
     const control = {
       button,
+      toggle,
       sync,
       setActive(next) {
         active = next;
@@ -577,6 +580,10 @@
     videoFrame.style.borderRadius = `${radius / width * 100}% / ${radius / height * 100}%`;
     const video = createPortfolioVideo(data.video, videoFrame, data.title);
     videoFrame.append(video, createFeatureVideoControl(video, data.title));
+    videoFrame.addEventListener("click", (event) => {
+      if (event.target?.closest?.("button")) return;
+      featureVideoControls.get(video)?.toggle();
+    });
     board.append(image, videoFrame);
     return board;
   }

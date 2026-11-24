@@ -61,7 +61,10 @@ class Node {
   addEventListener(type, callback) { this.events[type] = callback; }
   removeEventListener(type) { delete this.events[type]; }
   setAttribute(name, value) { this.attributes[name] = value; }
-  closest() { return this.hiddenSection ? {} : null; }
+  closest(selector) {
+    if (this.hiddenSection) return {};
+    return selector === 'button' && this.tagName === 'button' ? this : null;
+  }
   play() { this.paused = false; this.plays++; this.events.play?.(); return Promise.resolve(); }
   pause() { this.paused = true; this.pauses++; this.events.pause?.(); }
 }
@@ -74,7 +77,7 @@ vm.runInContext(functionsBetween('createPortfolioVideo', 'function createVideoGr
 const board = rendering.createFeatureBoard(feature, { title: 'Bing App' });
 assert.equal(board.style.aspectRatio, '2560 / 1440');
 assert.equal(board.dataset.featureId, 'ai-search');
-assert.equal(board.children.length, 2, 'The hover control stays inside the existing video overlay.');
+assert.equal(board.children.length, 2, 'The playback control stays inside the existing video overlay.');
 const [image, frame] = board.children;
 assert.equal(image.alt, 'AI Search · Bing App portfolio');
 assert.equal(image.width, 2560);
@@ -101,9 +104,23 @@ const control = featureVideoControls.get(video);
 const toggle = frame.children[1];
 assert.equal(toggle.className, 'project-video-toggle project-feature-video-toggle');
 assert.equal(toggle.attributes['aria-label'], 'Play video · AI Search');
+assert.equal(toggle.dataset.paused, 'true');
 control.setActive(true);
 assert.equal(video.paused, false, 'Visible videos autoplay initially.');
 assert.equal(toggle.attributes['aria-label'], 'Pause video · AI Search');
+assert.equal(toggle.dataset.paused, 'false', 'Playing hides the pointer/touch overlay.');
+frame.events.click({ target: frame });
+assert.equal(video.paused, true, 'Clicking the recording pauses without a visible control.');
+assert.equal(toggle.dataset.paused, 'true', 'Pausing exposes the persistent play button.');
+let propagationStopped = false;
+toggle.events.click({ stopPropagation() { propagationStopped = true; } });
+assert.equal(propagationStopped, true);
+assert.equal(video.paused, false);
+frame.events.click({ target: toggle });
+assert.equal(video.paused, false, 'A play-button click is not toggled twice by the recording surface.');
+frame.events.click({ target: new Node('button') });
+assert.equal(video.paused, false, 'A media-retry button does not also toggle playback.');
+assert.equal(toggle.dataset.paused, 'false');
 toggle.events.click();
 assert.equal(video.paused, true);
 control.setActive(false);
