@@ -16,8 +16,10 @@
     { id: "info-multi", name: "Info/Multi-line", title: "Thanks for providing feedback!", description: "Your feedback helps me assist you better next time.", dismiss: true, galleryWrap: true },
     { id: "settings", name: "Settings", title: "We got your feedback", icon: "success.svg", galleryWrap: false },
   ];
-  const defaults = (preset, wrap = true) => ({
-    preset, wrap: preset.wraps ? preset.wraps.includes(wrap) && wrap : wrap,
+  // A type selection starts from the retained gallery sample; switches can
+  // still adjust that sample independently afterward.
+  const defaults = (preset) => ({
+    preset, wrap: preset.galleryWrap,
     showImage: !!preset.image, showIcon: !!preset.icon, showTitle: !!preset.title,
     showDescription: !!preset.description, showButton: !!preset.action, showDismiss: !!preset.dismiss,
   });
@@ -149,7 +151,7 @@
       const group = node("div", "toast-variant-group");
       const sample = node("figure", "toast-variant");
       sample.dataset.toastVariant = `${preset.id}-${preset.galleryWrap ? "wrap" : "hug"}`;
-      sample.append(createToast(defaults(preset, preset.galleryWrap)));
+      sample.append(createToast(defaults(preset)));
       group.append(node("h5", "", preset.name), sample);
       gallery.append(group);
     });
@@ -167,7 +169,7 @@
     }
 
     listen(select, "change", () => {
-      state = defaults(classes.find((preset) => preset.id === select.value), state.wrap);
+      state = defaults(classes.find((preset) => preset.id === select.value));
       render();
     });
     listen(reset, "click", () => { state = defaults(classes[0]); render(); });

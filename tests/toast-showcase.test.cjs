@@ -67,6 +67,18 @@ function fixture(options) {
     changeProperty(key, checked) { const input = toggle(key); input.checked = checked; fire(input, 'change'); },
   };
 }
+function sampleContent(element) {
+  return {
+    tagName: element.tagName,
+    className: element.className,
+    text: element._text || '',
+    dataset: { ...element.dataset },
+    src: element.src,
+    width: element.width,
+    height: element.height,
+    children: element.children.map(sampleContent),
+  };
+}
 
 const page = fixture();
 const variants = all(page.root, element => Object.hasOwn(element.dataset, 'toastVariant'));
@@ -106,13 +118,36 @@ assert.equal(one(variants[0], hasClass('copilot-toast')), firstGalleryToast);
 assert.equal(firstGalleryToast.textContent, firstGalleryText);
 assert.equal(all(firstGalleryToast, hasClass('copilot-toast-image')).length, 1);
 
-// Picking a class applies its base properties. Survey has no wrapped variant.
+// Every type selection adopts its retained sample, including wrap, even
+// after the previous preview's properties were changed to opposing values.
+const slotClasses = {
+  showImage: 'copilot-toast-image', showIcon: 'copilot-toast-icon',
+  showTitle: 'copilot-toast-title-text', showDescription: 'copilot-toast-description',
+  showButton: 'copilot-toast-action', showDismiss: 'copilot-toast-dismiss',
+};
+for (const variant of variants) {
+  const retained = one(variant, hasClass('copilot-toast'));
+  const expected = {
+    wrap: retained.dataset.wrap === 'true',
+    ...Object.fromEntries(Object.entries(slotClasses).map(([key, className]) =>
+      [key, all(retained, hasClass(className)).length > 0])),
+  };
+  page.changeClass('feature');
+  for (const [key, checked] of Object.entries(expected)) page.changeProperty(key, !checked);
+  page.changeClass(retained.dataset.toastClass);
+  assert.deepEqual(sampleContent(page.toast()), sampleContent(retained), `${retained.dataset.toastClass} must match its retained sample`);
+  for (const [key, checked] of Object.entries(expected)) {
+    assert.equal(page.toggle(key).checked, checked, `${retained.dataset.toastClass}: ${key} must reset to the retained sample`);
+  }
+}
+
+// Picking a class restores its slots. Survey has no wrapped variant.
 page.changeClass('podcast');
 assert.equal(page.toggle('showImage').checked, true);
 assert.equal(page.toggle('showDescription').checked, true);
 assert.equal(one(page.toast(), hasClass('copilot-toast-action')).textContent, 'Listen');
-// Choosing one gallery sample per class must not constrain the preview's
-// independent wrap control, including classes whose retained sample is hug.
+// After selection adopts the retained sample, the independent wrap control
+// remains editable, including classes whose retained sample is hug.
 for (const preset of ['podcast', 'inline']) {
   page.changeClass(preset);
   assert.equal(page.toggle('wrap').disabled, false);
@@ -189,4 +224,4 @@ assert.equal(englishGalleryHeading.textContent, 'All variants');
 assert.equal(all(englishGalleryHeading, element => element.tagName === 'span').length, 0);
 assert.doesNotMatch(reopened.root.textContent, /Interactive preview|Replay|Notification (?:shown|dismissed)|Turn on a property/);
 reopened.destroy();
-console.log('Passed: 10 selected static variants, unrestricted preview wrap controls, property-only changes, class defaults, Survey constraints, blank/restore, cleanup, and fresh reopen.');
+console.log('Passed: all 10 type selections match retained samples, editable preview wrap controls, property-only changes, Survey constraints, blank/restore, cleanup, and fresh reopen.');
