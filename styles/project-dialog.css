@@ -144,6 +144,10 @@ html.has-cursor-fx.project-dialog-cursor-active .project-dialog::backdrop { curs
 .project-dialog[data-content-layout="boards"] .project-text-copy { margin: 0; max-width: 680px; }
 .project-dialog[data-content-layout="boards"] .project-text-copy p { color: #555; font-size: 16px; line-height: 1.8; text-wrap: pretty; }
 .project-dialog[data-content-layout="boards"] .project-text-copy p + p { margin-top: 16px; }
+
+.project-dialog[data-content-layout="boards"] #project-section-code-components { padding-top: 64px; }
+.project-dialog[data-content-layout="boards"] #project-section-code-components .project-text-content { grid-template-columns: minmax(0, 1fr); gap: 16px; padding-top: 0; }
+.project-dialog[data-content-layout="boards"] #project-section-code-components .project-text-copy { max-width: none; }
 @media (max-width: 1100px) {
   .project-dialog[data-content-layout="boards"] .project-text-content { grid-template-columns: minmax(0, 1fr); gap: 24px; }
 }
@@ -182,6 +186,7 @@ html.has-cursor-fx.project-dialog-cursor-active .project-dialog::backdrop { curs
   .project-dialog[data-content-layout="boards"] .project-text-content { gap: 20px; padding: 8px 8px 4px; }
   .project-dialog[data-content-layout="boards"] .project-content-placeholder { padding: 8px 8px 4px; }
   .project-dialog[data-content-layout="boards"] .project-text-copy p { font-size: 15px; line-height: 1.8; }
+  .project-dialog[data-content-layout="boards"] #project-section-code-components { padding-top: 40px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .project-dialog[open], .project-dialog-spinner { animation: none; }
