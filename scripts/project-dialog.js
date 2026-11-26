@@ -117,6 +117,11 @@
       contentLayout: "boards",
       singleSection: true,
     },
+    "copilot-mac": {
+      id: "copilot-mac",
+      title: "Copilot Mac",
+      contentLayout: "boards",
+    },
     "copilot-macos-ui-kit": {
       id: "copilot-macos-ui-kit",
       title: "Copilot macOS UI Kit",

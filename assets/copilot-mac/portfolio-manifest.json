@@ -1,0 +1,34 @@
+{
+  "sections": [
+    {
+      "id": "settings-v2",
+      "title": "Settings V2",
+      "type": "text",
+      "paragraphs": {
+        "zh": [
+          "Copilot 设置经过全面重设计，采用更清晰、贴合用户认知的信息架构与全新布局。新的信息架构让分类更易理解、设置更易查找；左侧导航与右侧内容的结构提供稳定、聚焦的浏览体验，更贴近原生 macOS。此次改版提升了功能的可发现性、可扩展性与整体一致性，带来更直观、流畅、精致的使用体验。"
+        ],
+        "en": [
+          "Copilot Settings has been fully redesigned with a clearer, user-aligned information architecture and a new layout. The updated IA makes categories easier to understand and settings easier to locate, while the sidebar-and-content structure provides stable navigation on the left and focused content on the right, aligning more closely with the native macOS experience. This redesign improves discoverability, scalability, and overall coherence, delivering a more intuitive, seamless, and polished experience for users."
+        ]
+      },
+      "pages": [
+        {
+          "src": "/assets/copilot-mac/settings-v2-overview.webp?v=45423c9fc872",
+          "width": 1728,
+          "height": 1117
+        },
+        {
+          "src": "/assets/copilot-mac/settings-v2-screens.webp?v=4213beede64b",
+          "width": 3170,
+          "height": 1072
+        },
+        {
+          "src": "/assets/copilot-mac/settings-v2-architecture.webp?v=50183ddcd88e",
+          "width": 1802,
+          "height": 1682
+        }
+      ]
+    }
+  ]
+}

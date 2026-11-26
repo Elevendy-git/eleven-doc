@@ -15,7 +15,7 @@ from urllib.parse import unquote, urljoin, urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PROJECTS = ("bing-app", "copilot-macos-ui-kit", "delysium", "digital-china", "deep-blue", "bard-ai")
+PROJECTS = ("bing-app", "copilot-mac", "copilot-macos-ui-kit", "delysium", "digital-china", "deep-blue", "bard-ai")
 FLIGHT_PUSH = re.compile(r"^\s*self\.__next_f\.push\((.*)\)\s*;?\s*$", re.S)
 CSS_URL = re.compile(r"url\(\s*(?:'([^']*)'|\"([^\"]*)\"|([^)]*))\s*\)", re.I)
 
