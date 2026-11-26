@@ -74,6 +74,7 @@
       typography: "Typography",
       navigation: "Navigation",
       dialogs: "Dialogs & Guidelines",
+      "code-components": "DS: Continue building components in code base",
       toast: "Prototype",
     },
     delysium: {

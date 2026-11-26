@@ -92,6 +92,26 @@
       ]
     },
     {
+      "id": "code-components",
+      "title": "DS：持续完善代码库中的组件",
+      "type": "text",
+      "paragraphs": {
+        "zh": [
+          "第二阶段将重点扩展组件使用场景、开发新组件，并逐步以标准化组件替换现有代码。"
+        ],
+        "en": [
+          "In Stage 2, focus on extending component scenarios, developing new components, and progressively replacing existing code with standardized components."
+        ]
+      },
+      "pages": [
+        {
+          "src": "/assets/copilot-macos-ui-kit/11-code-components.webp?v=5ce0e1efe53c",
+          "width": 2880,
+          "height": 1620
+        }
+      ]
+    },
+    {
       "id": "toast",
       "title": "交互原型",
       "type": "component",
