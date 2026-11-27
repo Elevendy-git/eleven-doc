@@ -210,21 +210,33 @@ class IntegrityCheck:
             if any(type(feature.get(key)) is not int or not positive(feature[key]) for key in ("width", "height")):
                 raise ValueError("invalid feature board dimensions")
             asset(feature.get("src"))
-            video = feature.get("video")
-            if not isinstance(video, dict) or video.get("type") != "video" or any(type(video.get(key)) is not int or not positive(video[key]) for key in ("width", "height")):
-                raise ValueError("invalid feature video")
-            asset(video.get("src"))
-            asset(video.get("poster"))
-            frame = video.get("frame")
-            if not isinstance(frame, dict) or any(not positive(frame.get(key)) for key in ("width", "height")):
-                raise ValueError("invalid feature video frame dimensions")
-            if any(type(frame.get(key)) not in (int, float) or not math.isfinite(frame[key]) or frame[key] < 0 for key in ("x", "y", "radius")):
-                raise ValueError("invalid feature video frame position")
-            stroke = frame.get("stroke", 0)
-            if type(stroke) not in (int, float) or not math.isfinite(stroke) or stroke < 0:
-                raise ValueError("invalid feature video frame stroke")
-            if frame["x"] + frame["width"] > feature["width"] or frame["y"] + frame["height"] > feature["height"] or frame["radius"] > min(frame["width"], frame["height"]) / 2 or stroke >= min(frame["width"], frame["height"]):
-                raise ValueError("feature video frame exceeds its board")
+            if ("video" in feature) == ("videos" in feature):
+                raise ValueError("feature boards need exactly one video format")
+            multiple = "videos" in feature
+            videos = feature["videos"] if multiple else [feature["video"]]
+            if not isinstance(videos, list) or not videos:
+                raise ValueError("missing feature videos")
+            titles = set()
+            for video in videos:
+                if not isinstance(video, dict) or video.get("type") != "video" or any(type(video.get(key)) is not int or not positive(video[key]) for key in ("width", "height")):
+                    raise ValueError("invalid feature video")
+                if multiple:
+                    title = video.get("title")
+                    if not isinstance(title, str) or not title.strip() or title.strip() in titles:
+                        raise ValueError("missing or duplicate feature video title")
+                    titles.add(title.strip())
+                asset(video.get("src"))
+                asset(video.get("poster"))
+                frame = video.get("frame")
+                if not isinstance(frame, dict) or any(not positive(frame.get(key)) for key in ("width", "height")):
+                    raise ValueError("invalid feature video frame dimensions")
+                if any(type(frame.get(key)) not in (int, float) or not math.isfinite(frame[key]) or frame[key] < 0 for key in ("x", "y", "radius")):
+                    raise ValueError("invalid feature video frame position")
+                stroke = frame.get("stroke", 0)
+                if type(stroke) not in (int, float) or not math.isfinite(stroke) or stroke < 0:
+                    raise ValueError("invalid feature video frame stroke")
+                if frame["x"] + frame["width"] > feature["width"] or frame["y"] + frame["height"] > feature["height"] or frame["radius"] > min(frame["width"], frame["height"]) / 2 or stroke >= min(frame["width"], frame["height"]):
+                    raise ValueError("feature video frame exceeds its board")
 
     def manifests(self):
         for project in PROJECTS:

@@ -1,8 +1,108 @@
 {
   "groups": [
+    { "id": "global", "title": "Bing Global", "shortTitle": "Global" },
     { "id": "china", "title": "Bing China", "shortTitle": "China" }
   ],
   "sections": [
+    {
+      "id": "copilot-search-default",
+      "group": "global",
+      "title": "Copilot Search as Default",
+      "type": "text",
+      "paragraphs": {
+        "zh": [
+          "为推广 Copilot Search 并扩大用户群，我们在首页搜索框中引入了搜索模式切换功能，让用户可以自由切换 Copilot Search 和 Web Search。",
+          "对于经常使用 Copilot Search 的用户，这一设计提供了便捷、连贯的访问体验，无需每次手动选择。其他用户也可以根据自己的使用习惯设置偏好的默认搜索引擎，减少搜索过程中的操作阻力，提升整体效率。",
+          "同时，我们在 Copilot Search 中设计了 mini IAB，控制入口数量，减少对用户的干扰，确保体验专注、流畅。"
+        ],
+        "en": [
+          "To promote and expand the Copilot Search user base, we introduced a search mode switch in the homepage search box, allowing users to freely toggle between Copilot Search and Web Search.",
+          "For users who frequently use Copilot Search, this design provides seamless access without the need to manually select it each time. For other users, it offers the ability to set their preferred default search engine based on their habits, reducing friction in the search process and improving overall efficiency.",
+          "At the same time, we designed a mini IAB within Copilot Search to control the number of entry points, minimizing user distractions while ensuring a focused and seamless experience."
+        ]
+      },
+      "pages": [
+        {
+          "src": "/assets/bing-app/copilot-search-default-01-homepage-switcher.webp?v=fba366445beb",
+          "width": 2560,
+          "height": 1440
+        },
+        {
+          "src": "/assets/bing-app/copilot-search-default-02-promotion-dialog.webp?v=a40c848e076a",
+          "width": 2560,
+          "height": 1440
+        },
+        {
+          "src": "/assets/bing-app/copilot-search-default-03-copilot-search.webp?v=bb4c3a23c306",
+          "width": 2560,
+          "height": 1440
+        },
+        {
+          "src": "/assets/bing-app/copilot-search-default-04-mini-iab.webp?v=352231482dde",
+          "width": 2560,
+          "height": 1440
+        }
+      ],
+      "features": [
+        {
+          "id": "copilot-search-interactions",
+          "title": "Copilot Search as Default",
+          "src": "/assets/bing-app/features/copilot-search-interactions-board.webp?v=12898898daed",
+          "width": 2560,
+          "height": 1440,
+          "videos": [
+            {
+              "type": "video",
+              "src": "/assets/bing-app/features/copilot-search-mode-transition.mp4?v=806e4cf080fb",
+              "poster": "/assets/bing-app/features/copilot-search-mode-transition-poster.webp?v=bc8a1d2fe48c",
+              "width": 800,
+              "height": 450,
+              "frame": {
+                "x": 128,
+                "y": 450,
+                "width": 960,
+                "height": 540,
+                "radius": 12.8,
+                "stroke": 0
+              },
+              "title": "Search mode transition"
+            },
+            {
+              "type": "video",
+              "src": "/assets/bing-app/features/copilot-homepage-switcher.mp4?v=6d24f6b193de",
+              "poster": "/assets/bing-app/features/copilot-homepage-switcher-poster.webp?v=28b72d126f11",
+              "width": 400,
+              "height": 868,
+              "frame": {
+                "x": 1240,
+                "y": 155.8,
+                "width": 520,
+                "height": 1128.4,
+                "radius": 57.2,
+                "stroke": 0
+              },
+              "title": "Homepage search mode switcher"
+            },
+            {
+              "type": "video",
+              "src": "/assets/bing-app/features/copilot-mini-iab.mp4?v=4a3ed91e1b1f",
+              "poster": "/assets/bing-app/features/copilot-mini-iab-poster.webp?v=0fe8cd9d0019",
+              "width": 400,
+              "height": 868,
+              "frame": {
+                "x": 1912,
+                "y": 155.8,
+                "width": 520,
+                "height": 1128.4,
+                "radius": 57.2,
+                "stroke": 0
+              },
+              "title": "Mini IAB"
+            }
+          ]
+        }
+      ]
+    },
     {
       "id": "china-fre",
       "group": "china",

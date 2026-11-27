@@ -331,12 +331,21 @@
       if (!feature || typeof feature.id !== "string" || !/^[a-zA-Z0-9_-]+$/.test(feature.id) || ids.has(feature.id) || typeof feature.title !== "string" || !feature.title.trim()) throw new Error(ui.invalidMedia);
       ids.add(feature.id);
       if (!Number.isInteger(feature.width) || !positive(feature.width) || !Number.isInteger(feature.height) || !positive(feature.height) || !validProjectAsset(feature.src, projectId)) throw new Error(ui.invalidMedia);
-      const video = feature.video;
-      if (!video || video.type !== "video" || !Number.isInteger(video.width) || !positive(video.width) || !Number.isInteger(video.height) || !positive(video.height) || !validProjectAsset(video.src, projectId) || !validProjectAsset(video.poster, projectId)) throw new Error(ui.invalidMedia);
-      const frame = video.frame;
-      if (!frame || ![frame.x, frame.y, frame.radius, frame.stroke ?? 0].every((value) => Number.isFinite(value) && value >= 0) || !positive(frame.width) || !positive(frame.height)) throw new Error(ui.invalidMedia);
-      const stroke = frame.stroke ?? 0;
-      if (frame.x + frame.width > feature.width || frame.y + frame.height > feature.height || frame.radius > Math.min(frame.width, frame.height) / 2 || stroke >= Math.min(frame.width, frame.height)) throw new Error(ui.invalidMedia);
+      if ((feature.video !== undefined) === (feature.videos !== undefined)) throw new Error(ui.invalidMedia);
+      const videos = feature.videos ?? [feature.video];
+      if (!Array.isArray(videos) || !videos.length) throw new Error(ui.invalidMedia);
+      const videoTitles = new Set();
+      for (const video of videos) {
+        if (feature.videos !== undefined) {
+          if (typeof video?.title !== "string" || !video.title.trim() || videoTitles.has(video.title.trim())) throw new Error(ui.invalidMedia);
+          videoTitles.add(video.title.trim());
+        }
+        if (!video || video.type !== "video" || !Number.isInteger(video.width) || !positive(video.width) || !Number.isInteger(video.height) || !positive(video.height) || !validProjectAsset(video.src, projectId) || !validProjectAsset(video.poster, projectId)) throw new Error(ui.invalidMedia);
+        const frame = video.frame;
+        if (!frame || ![frame.x, frame.y, frame.radius, frame.stroke ?? 0].every((value) => Number.isFinite(value) && value >= 0) || !positive(frame.width) || !positive(frame.height)) throw new Error(ui.invalidMedia);
+        const stroke = frame.stroke ?? 0;
+        if (frame.x + frame.width > feature.width || frame.y + frame.height > feature.height || frame.radius > Math.min(frame.width, frame.height) / 2 || stroke >= Math.min(frame.width, frame.height)) throw new Error(ui.invalidMedia);
+      }
     }
   }
 
@@ -572,26 +581,30 @@
     image.addEventListener("error", () => mediaFailed(board, image));
     image.src = data.src;
 
-    const videoFrame = document.createElement("div");
-    videoFrame.className = "project-feature-video-frame";
-    const frame = data.video.frame;
-    // The exported board already contains the original white stroke and shadow.
-    const inset = (frame.stroke ?? 0) / 2;
-    const width = frame.width - inset * 2;
-    const height = frame.height - inset * 2;
-    const radius = Math.max(0, frame.radius - inset);
-    videoFrame.style.left = `${(frame.x + inset) / data.width * 100}%`;
-    videoFrame.style.top = `${(frame.y + inset) / data.height * 100}%`;
-    videoFrame.style.width = `${width / data.width * 100}%`;
-    videoFrame.style.height = `${height / data.height * 100}%`;
-    videoFrame.style.borderRadius = `${radius / width * 100}% / ${radius / height * 100}%`;
-    const video = createPortfolioVideo(data.video, videoFrame, data.title);
-    videoFrame.append(video, createFeatureVideoControl(video, data.title));
-    videoFrame.addEventListener("click", (event) => {
-      if (event.target?.closest?.("button")) return;
-      featureVideoControls.get(video)?.toggle();
+    board.append(image);
+    (data.videos ?? [data.video]).forEach((videoData) => {
+      const title = data.videos ? videoData.title : data.title;
+      const videoFrame = document.createElement("div");
+      videoFrame.className = "project-feature-video-frame";
+      const frame = videoData.frame;
+      // The exported board already contains the original white stroke and shadow.
+      const inset = (frame.stroke ?? 0) / 2;
+      const width = frame.width - inset * 2;
+      const height = frame.height - inset * 2;
+      const radius = Math.max(0, frame.radius - inset);
+      videoFrame.style.left = `${(frame.x + inset) / data.width * 100}%`;
+      videoFrame.style.top = `${(frame.y + inset) / data.height * 100}%`;
+      videoFrame.style.width = `${width / data.width * 100}%`;
+      videoFrame.style.height = `${height / data.height * 100}%`;
+      videoFrame.style.borderRadius = `${radius / width * 100}% / ${radius / height * 100}%`;
+      const video = createPortfolioVideo(videoData, videoFrame, title);
+      videoFrame.append(video, createFeatureVideoControl(video, title));
+      videoFrame.addEventListener("click", (event) => {
+        if (event.target?.closest?.("button")) return;
+        featureVideoControls.get(video)?.toggle();
+      });
+      board.append(videoFrame);
     });
-    board.append(image, videoFrame);
     return board;
   }
 

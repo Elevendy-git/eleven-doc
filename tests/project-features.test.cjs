@@ -39,6 +39,32 @@ for (const mutate of [
 }
 assert.throws(() => validation.validateFeatureBoards([feature, feature], 'bing-app'), /invalid media/);
 assert.throws(() => validation.validateFeatureBoards([], 'bing-app'), /invalid media/);
+const { video: sharedVideo, ...sharedCanvas } = structuredClone(feature);
+const multiFeature = {
+  ...sharedCanvas, id: 'copilot-search-motion', title: 'Copilot Search in motion',
+  videos: ['Search transition', 'Homepage switcher', 'Mini IAB'].map((title, index) => ({
+    ...structuredClone(sharedVideo), title,
+    frame: { ...sharedVideo.frame, x: 213 + index * 700 },
+  })),
+};
+validation.validateFeatureBoards([multiFeature], 'bing-app');
+for (const mutate of [
+  f => { f.video = sharedVideo; },
+  f => { delete f.videos; },
+  f => { f.videos = []; },
+  f => { f.videos = null; },
+  f => { f.videos = {}; },
+  f => { f.videos[1] = null; },
+  f => { delete f.videos[0].title; },
+  f => { f.videos[1].title = ' '; },
+  f => { f.videos[2].title = ' Search transition '; },
+  f => { f.videos[2].frame.width = 3000; },
+  f => { f.videos[2].src = '/assets/copilot-mac/other.mp4'; },
+]) {
+  const invalid = structuredClone(multiFeature);
+  mutate(invalid);
+  assert.throws(() => validation.validateFeatureBoards([invalid], 'bing-app'), /invalid media/);
+}
 assert.equal(validation.readPortfolioLink('?project=__proto__&section=china-ai'), null);
 assert.equal(validation.readPortfolioLink('?project=unknown'), null);
 assert.equal(validation.readPortfolioLink('?section=china-ai'), null);
@@ -139,6 +165,33 @@ toggle.events.click();
 assert.equal(video.paused, false, 'The user can play from a visible control below the visibility threshold.');
 control.setActive(false);
 assert.equal(video.paused, true, 'Leaving the viewport stops an explicitly resumed video too.');
+
+const multiBoard = rendering.createFeatureBoard(multiFeature, { title: 'Bing App' });
+assert.equal(multiBoard.children.length, 4, 'A shared canvas has one background and three recording overlays.');
+assert.equal(multiBoard.children.filter(child => child.tagName === 'img').length, 1);
+const multiFrames = multiBoard.children.slice(1);
+const multiVideos = multiFrames.map(item => item.children[0]);
+const multiControls = multiVideos.map(item => featureVideoControls.get(item));
+multiFrames.forEach((item, index) => {
+  const descriptor = multiFeature.videos[index];
+  assert.equal(item.children[0].attributes['aria-label'], `${descriptor.title} prototype demo`);
+  assert.equal(item.children[1].attributes['aria-label'], `Play video · ${descriptor.title}`);
+  assert.ok(Math.abs(parseFloat(item.style.left) / 100 * 2560 - (descriptor.frame.x + inset)) < 1e-8);
+  multiControls[index].setActive(true);
+});
+assert.ok(multiVideos.every(item => !item.paused));
+multiFrames[1].events.click({ target: multiFrames[1] });
+assert.equal(multiVideos[1].paused, true);
+assert.equal(multiVideos[0].paused, false, 'Pausing one recording leaves its shared-canvas neighbors playing.');
+assert.equal(multiVideos[2].paused, false);
+multiControls.forEach(item => item.setActive(false));
+multiControls.forEach(item => item.setActive(true));
+assert.equal(multiVideos[1].paused, true, 'A manual pause survives visibility changes on the shared canvas.');
+assert.equal(multiVideos[0].paused, false);
+assert.equal(multiVideos[2].paused, false);
+multiControls.forEach(item => item.destroy());
+assert.ok(multiVideos.every(item => item.paused));
+assert.ok(multiFrames.every(item => item.children[1].events.click === undefined));
 
 const videos = [0, 1, 2, 3].map(() => ({
   plays: 0, pauses: 0, closest() { return null; },
@@ -266,6 +319,7 @@ async function manifest(data) {
   const text = { id: 'china-ai', title: 'Bing China AI', type: 'text', paragraphs: { zh: ['介绍'], en: ['Introduction'] } };
   await manifest({ sections: [text] });
   await manifest({ sections: [{ ...text, features: [feature] }] });
+  await manifest({ sections: [{ ...text, features: [multiFeature] }] });
   const staticPage = { src: '/assets/bing-app/homepage.webp', width: 2560, height: 1440 };
   const mixed = { ...text, pages: [staticPage, { ...staticPage, src: '/assets/bing-app/homepage-2.webp' }], features: [feature] };
   assert.equal((await manifest({ sections: [mixed] })).sections[0].pages.length, 2, 'A text chapter can keep its static pages alongside recording boards.');
@@ -276,5 +330,5 @@ async function manifest(data) {
   await assert.rejects(manifest({ sections: [{ ...mixed, features: [{ ...feature, video: { ...feature.video, poster: 'https://example.test/poster.webp' } }] }] }), /invalid media/);
   await assert.rejects(manifest({ sections: [{ id: 'image', title: 'Image', features: [feature] }] }), /invalid sections/);
   await assert.rejects(manifest({ sections: [{ ...text, features: [] }] }), /invalid media/);
-  console.log('Passed: feature assets/frame validation, responsive geometry, independent playback controls, persistent manual pause, blocked-play retry, close cleanup, mixed text manifests, and hydration-safe links.');
+  console.log('Passed: single/shared-canvas feature validation, responsive geometry, independent playback controls, persistent manual pause, blocked-play retry, close cleanup, mixed text manifests, and hydration-safe links.');
 })().catch(error => { console.error(error); process.exitCode = 1; });
